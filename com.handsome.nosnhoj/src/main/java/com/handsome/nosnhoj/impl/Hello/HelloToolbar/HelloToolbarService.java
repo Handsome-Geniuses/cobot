@@ -1,4 +1,4 @@
-package com.handsome.nosnhoj.impl.HelloToolbar;
+package com.handsome.nosnhoj.impl.Hello.HelloToolbar;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;

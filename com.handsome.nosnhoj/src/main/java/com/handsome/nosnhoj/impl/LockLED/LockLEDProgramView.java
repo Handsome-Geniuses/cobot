@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.text.DecimalFormat;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -34,8 +35,14 @@ public class LockLEDProgramView implements SwingProgramNodeView<LockLEDProgramCo
 											new JSlider(JSlider.HORIZONTAL,0, 9, 0), 
 											new JSlider(JSlider.HORIZONTAL,0, 9, 0)};
 	
+	private JCheckBox FlashBox = new JCheckBox("Flash", false);
+	private JSlider DurationSliders[] = {	new JSlider(JSlider.HORIZONTAL,0, 9, 0), 
+											new JSlider(JSlider.HORIZONTAL,0, 9, 0)};
+	
 	static String colors[] = {"Red   ", "Green", "Blue   "};
 	private JLabel value[] = {new JLabel("0%"), new JLabel("0%"), new JLabel("0%")};
+	private String durstring[] = {"On", "Off"};
+	private JLabel duration[] = {new JLabel("0.200s"), new JLabel("0.200s")};
 	
 	//constructor members
 	private final ViewAPIProvider apiProvider;
@@ -54,8 +61,16 @@ public class LockLEDProgramView implements SwingProgramNodeView<LockLEDProgramCo
 		panel.add(CreateSpace(0, gap_sm));
 		
 		for (int i = 0; i < RGBSliders.length; i++) {
-			panel.add(CreateSlider(provider, colors[i], RGBSliders[i], value[i]));
+			panel.add(CreateRGBSlider(provider, colors[i], RGBSliders[i], value[i]));
 		}
+		
+		panel.add(CreateSpace(0, gap_lg));
+		panel.add(CreateInfo("Enable flash and select on and off duration if desired."));
+		panel.add(CreateFlashBox(provider));
+		for (int i = 0; i < DurationSliders.length; i++) {
+			panel.add(BoxCreateDurationSliders(provider, durstring[i] ,DurationSliders[i], duration[i]));
+		}
+		
 	}
 	
 	public void SetZone(int z) {
@@ -65,21 +80,38 @@ public class LockLEDProgramView implements SwingProgramNodeView<LockLEDProgramCo
 				ZoneCheckBoxes[i].setEnabled(false);
 			}
 			else {
-				ZoneCheckBoxes[0].setSelected(false);
-				ZoneCheckBoxes[0].setEnabled(true);
+				ZoneCheckBoxes[i].setSelected(false);
+				ZoneCheckBoxes[i].setEnabled(true);
 			}
 		}
 	}
-	
-	public void SetSliders(int colors[]) {
+	public void SetFlashBox(boolean f) {
+		FlashBox.setSelected(f);
+		DurationSliders[0].setEnabled(f);
+		DurationSliders[1].setEnabled(f);
+	}
+	public void SetRGBSliders(int colors[]) {
 		for (int i = 0; i < colors.length; i++) {
 			RGBSliders[i].setValue(colors[i]);
 			value[i].setText(Integer.toString(colors[i]<1?0:colors[i]*10)+"%");
 		}
 	}
+	public void SetDurationSliders(int dur[]) {
+		for (int i = 0; i < DurationSliders.length; i++) {
+			DurationSliders[i].setValue(dur[i]);
+			duration[i].setText(String.valueOf((1+dur[i])*0.200)+"s");
+		}
+	}
 	
-	public int[] GetSliderVals(){
+	public boolean GetFlashStatus() {
+		return FlashBox.isSelected();
+	}
+	public int[] GetSliderRGB(){
 		int temp[] = {RGBSliders[0].getValue(), RGBSliders[1].getValue(), RGBSliders[2].getValue()};
+		return temp;
+	}
+	public int[] GetSliderDurations() {
+		int temp[] = {DurationSliders[0].getValue(), DurationSliders[1].getValue()};
 		return temp;
 	}
 	
@@ -127,7 +159,28 @@ public class LockLEDProgramView implements SwingProgramNodeView<LockLEDProgramCo
 		return box;	
 	}
 	
-	private Box CreateSlider(final ContributionProvider<LockLEDProgramContribution> provider, 
+	private Box CreateFlashBox(final ContributionProvider<LockLEDProgramContribution> provider) {
+		Box box = Box.createHorizontalBox();
+		box.setAlignmentX(Component.LEFT_ALIGNMENT);
+		FlashBox.addItemListener(new ItemListener() {
+			
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if(e.getStateChange()==ItemEvent.SELECTED) {
+					DurationSliders[0].setEnabled(true);
+					DurationSliders[1].setEnabled(true);
+				}
+				else {
+					DurationSliders[0].setEnabled(false);
+					DurationSliders[1].setEnabled(false);
+				}
+			}
+		});
+		box.add(FlashBox);
+		return box;
+	}
+	
+	private Box CreateRGBSlider(final ContributionProvider<LockLEDProgramContribution> provider, 
 			String s, final JSlider slider, final JLabel val) {
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -136,13 +189,37 @@ public class LockLEDProgramView implements SwingProgramNodeView<LockLEDProgramCo
 		slider.setMaximumSize(slider.getPreferredSize());
 		
 		slider.addChangeListener(new ChangeListener() {
-			
 			@Override
 			public void stateChanged(ChangeEvent arg0) {
 				int v = slider.getValue();
 				v = (v<1)?(0):(10*(v));
 				val.setText(Integer.toString(v)+"%");
 //				provider.get().OnColorChange(Intvalue[0].getText(), RGBSliders[1].getValue(), RGBSliders[2].getValue());
+			}
+		});
+		
+		box.add(new JLabel(s));
+		box.add(CreateSpace(gap_sm, 0));
+		box.add(slider);
+		box.add(val);
+		return box;
+	}
+	
+	private Box BoxCreateDurationSliders(final ContributionProvider<LockLEDProgramContribution> provider,
+			String s, final JSlider slider, final JLabel val) {
+		Box box = Box.createHorizontalBox();
+		box.setAlignmentX(Component.LEFT_ALIGNMENT);
+		
+		slider.setPreferredSize(new Dimension(300, 30));
+		slider.setMaximumSize(slider.getPreferredSize());
+		
+		
+		slider.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				float v = slider.getValue();
+				v = (float) ((1.0+v)*0.200);
+				val.setText(new DecimalFormat("#.###").format(v)+"s");
 			}
 		});
 		

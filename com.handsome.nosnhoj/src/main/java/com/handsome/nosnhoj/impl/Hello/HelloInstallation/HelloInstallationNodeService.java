@@ -1,4 +1,4 @@
-package com.handsome.nosnhoj.impl.HelloInstallation;
+package com.handsome.nosnhoj.impl.Hello.HelloInstallation;
 
 import java.util.Locale;
 

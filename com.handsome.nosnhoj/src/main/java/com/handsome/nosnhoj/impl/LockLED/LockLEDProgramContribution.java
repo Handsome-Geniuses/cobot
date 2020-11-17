@@ -14,6 +14,7 @@ public class LockLEDProgramContribution implements ProgramNodeContribution{
 	private final LockLEDProgramView view;
 	private final DataModel model;
 	private final UndoRedoManager undoRedoManager;
+	private String title;
 	
 	private static final String KEY_ZONE = "zones";
 	private static final int DEF_ZONE = 0;	//0 is zone 1
@@ -21,17 +22,25 @@ public class LockLEDProgramContribution implements ProgramNodeContribution{
 	private static final String KEY_COLOR = "led_colors";
 	private static final int[] DEF_VALUES = {0,0,0};
 	
+	private static final String KEY_FLASH = "flash_enabled";
+	private static final boolean DEF_FLASH = false;
+	
+	private static final String KEY_DURATION = "flash_duration";
+	private static final int[] DEF_DURATION = {4, 4};
+	
 	public LockLEDProgramContribution(ProgramAPIProvider apiProvider, LockLEDProgramView view, DataModel model) {
 		this.apiProvider = apiProvider;
 		this.view = view;
 		this.model = model;
 		this.undoRedoManager = this.apiProvider.getProgramAPI().getUndoRedoManager();
+		this.title = "led()";
 	}
 	private CommsInstallationContribution GetCommsInstallationContribution() {
 		return apiProvider.getProgramAPI().getInstallationNode(CommsInstallationContribution.class);
 	}
 	
 	
+	//zone functions
 	private void SetZone(final int z) {
 		model.set(KEY_ZONE, z);
 	}
@@ -48,6 +57,7 @@ public class LockLEDProgramContribution implements ProgramNodeContribution{
 		});
 	}
 	
+	//RGB functions
 	private void SetColors(int r, int g, int b) {
 		int temp[] = {r, g, b};
 		model.set(KEY_COLOR, temp);
@@ -65,23 +75,50 @@ public class LockLEDProgramContribution implements ProgramNodeContribution{
 		});
 	}
 	
+	//flash functions
+//	private void SetFlash(boolean f) {
+//		model.set(KEY_FLASH, f);
+//	}
+	private boolean GetFlash() {
+		return model.get(KEY_FLASH, DEF_FLASH);
+	}
+	
+	//duration functions
+//	private void SetDurations(int[] d) {
+//		model.set(KEY_DURATION, d);
+//	}
+	private int[] GetDurations() {
+		return model.get(KEY_DURATION, DEF_DURATION);
+	}
+	
 	@Override
 	public void openView() {
 		view.SetZone(GetZone());
-		view.SetSliders(GetColors());
-//		int temp[] = GetColors();
-//		view.SetSliders(temp[0], temp[1], temp[2]);
+		view.SetRGBSliders(GetColors());
+		view.SetFlashBox(GetFlash());
+		view.SetDurationSliders(GetDurations());
 	}
 
 	@Override
 	public void closeView() {
-		model.set(KEY_COLOR, view.GetSliderVals());
+		model.set(KEY_COLOR, view.GetSliderRGB());
+		model.set(KEY_FLASH, view.GetFlashStatus());
+		model.set(KEY_DURATION, view.GetSliderDurations());
+		
+		int colors[]=GetColors();
+		String s = "led(Z"+Integer.toString(GetZone()+1)+"L"+Integer.toString(colors[0])+Integer.toString(colors[1])+Integer.toString(colors[2]);
+		if(GetFlash()) {
+			s=s+"f)";
+		}
+		else {
+			s=s+")";
+		}
+		title=s;
 	}
 
 	@Override
 	public String getTitle() {
-		// TODO somehow translate sliders to short text
-		return "led()"; //for now, generic.
+		return title;
 	}
 
 	@Override
@@ -90,15 +127,17 @@ public class LockLEDProgramContribution implements ProgramNodeContribution{
 //		return true; //true for now
 	}
 
+	private String GetRGBCommand() {
+		int colors[] = GetColors();
+		String command = GetCommsInstallationContribution().GetXmlRpcVariable()+".send_message(";
+		command = command+"\"@Z"+Integer.toString(GetZone()+1)+";L";
+		command = command+Integer.toString(colors[0])+Integer.toString(colors[1])+Integer.toString(colors[2])+";\")";
+		return command;
+	}
 	@Override
 	public void generateScript(ScriptWriter writer) {
 //		writer.assign("remove_this_later", "1");
-//		"\""+askdlasdjklsd()+"\""
-		String temp = ".send_message(";
-		int colors[]=GetColors();
-		temp = temp+"\"@Z"+Integer.toString(GetZone()+1)+";L";
-		temp = temp+Integer.toString(colors[0])+Integer.toString(colors[1])+Integer.toString(colors[2])+";\")";
-		writer.appendLine(GetCommsInstallationContribution().GetXmlRpcVariable()+temp);
+		writer.appendLine(GetRGBCommand());
 	}
 
 }
