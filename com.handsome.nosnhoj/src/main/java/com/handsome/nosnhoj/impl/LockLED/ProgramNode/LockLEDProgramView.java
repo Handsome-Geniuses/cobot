@@ -99,7 +99,7 @@ public class LockLEDProgramView implements SwingProgramNodeView<LockLEDProgramCo
 	public void SetDurationSliders(int dur[]) {
 		for (int i = 0; i < DurationSliders.length; i++) {
 			DurationSliders[i].setValue(dur[i]);
-			duration[i].setText(String.valueOf((dur[i])/1000)+"s");
+			duration[i].setText(new DecimalFormat("#.###").format((float)(dur[i])/1000)+"s");
 		}
 	}
 	
