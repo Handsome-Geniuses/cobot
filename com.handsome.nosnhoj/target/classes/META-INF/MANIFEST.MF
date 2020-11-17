@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1605291301597
+Bnd-LastModified: 1605563838326
 Build-Jdk: 1.8.0_275
 Built-By: ur
 Bundle-Activator: com.handsome.nosnhoj.impl.Activator
@@ -25,7 +25,7 @@ Import-Package: com.ur.urcap.api.contribution;version="[1.8,2)",com.ur.u
  .ur.urcap.api.domain.undoredo;version="[1.7,2)",com.ur.urcap.api.domain
  .userinteraction;version="[1.8,2)",com.ur.urcap.api.domain.userinteract
  ion.inputvalidation;version="[1.7,2)",com.ur.urcap.api.domain.userinter
- action.keyboard;version="[1.7,2)",javax.swing,org.apache.xmlrpc;version
- ="[3.1,4)",org.apache.xmlrpc.client;version="[3.1,4)",org.osgi.framewor
- k;version="[1.6,2)"
+ action.keyboard;version="[1.7,2)",javax.swing,javax.swing.event,org.apa
+ che.xmlrpc;version="[3.1,4)",org.apache.xmlrpc.client;version="[3.1,4)"
+ ,org.osgi.framework;version="[1.6,2)"
 Tool: Bnd-2.1.0.20130426-122213
