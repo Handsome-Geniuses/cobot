@@ -30,7 +30,7 @@ public class LockLEDProgramContribution implements ProgramNodeContribution{
 	private static final boolean DEF_FLASH = false;
 	
 	private static final String KEY_DURATION = "flash_duration";
-	private static final int[] DEF_DURATION = {4, 4};
+	private static final int[] DEF_DURATION = {0, 0};
 	
 	public LockLEDProgramContribution(ProgramAPIProvider apiProvider, LockLEDProgramView view, DataModel model) {
 		this.apiProvider = apiProvider;
@@ -145,14 +145,17 @@ public class LockLEDProgramContribution implements ProgramNodeContribution{
 		String xmlrpc = GetCommsInstallationContribution().GetXmlRpcVariable();
 		String rgbcommand = GetRGBCommand();
 		writer.appendLine(installationContribution.GetFlashStringVariable()+"="+rgbcommand);
-		writer.appendLine(xmlrpc+".send_message("+installationContribution.GetFlashStringVariable()+")");
-//		if(!GetFlash()) {
-//			writer.appendLine(installationContribution.GetFlashEnableVariable()+"=False");
-//			writer.appendLine(xmlrpc+".send_message("+installationContribution.GetFlashStringVariable()+")");
-//		}
-//		else {
-//			writer.appendLine(installationContribution.GetFlashEnableVariable()+"=True");
-//		}
+//		writer.appendLine(xmlrpc+".send_message("+installationContribution.GetFlashStringVariable()+")");
+		if(!GetFlash()) {
+			writer.appendLine(installationContribution.GetFlashEnableVariable()+"=False");
+			writer.appendLine(xmlrpc+".send_message("+installationContribution.GetFlashStringVariable()+")");
+		}
+		else {
+			int dur[] = GetDurations(); //0-2000ms. need convert to seconds.
+			writer.appendLine(installationContribution.GetFlashDurationOn()+"="+Float.toString(dur[0]/1000));
+			writer.appendLine(installationContribution.GetFlashDurationOff()+"="+Float.toString(dur[1]/1000));
+			writer.appendLine(installationContribution.GetFlashEnableVariable()+"=True");
+		}
 	}
 
 }

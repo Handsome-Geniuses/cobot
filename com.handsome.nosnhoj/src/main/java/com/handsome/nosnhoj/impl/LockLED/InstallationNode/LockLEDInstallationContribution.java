@@ -1,29 +1,35 @@
 package com.handsome.nosnhoj.impl.LockLED.InstallationNode;
 
+import com.handsome.nosnhoj.impl.Comms.Installation.CommsInstallationContribution;
 import com.ur.urcap.api.contribution.InstallationNodeContribution;
 import com.ur.urcap.api.contribution.installation.InstallationAPIProvider;
 import com.ur.urcap.api.domain.data.DataModel;
-import com.ur.urcap.api.domain.program.nodes.builtin.configurations.waypointnode.VariablePositionWaypointNodeConfig.VariableDefinition;
 import com.ur.urcap.api.domain.script.ScriptWriter;
 import com.ur.urcap.api.domain.variable.GlobalVariable;
-import com.ur.urcap.api.domain.variable.Variable;
-import com.ur.urcap.api.domain.variable.VariableFactory;
-import com.ur.urcap.api.domain.variable.Variable.Type;
 
 public class LockLEDInstallationContribution implements InstallationNodeContribution{
 
+	private final CommsInstallationContribution comms;
+	
 	private final InstallationAPIProvider apiProvider;
 	private final LockLEDInstallationView view;
 	private final DataModel model;
 	
 	private final GlobalVariable g_FlashStringVar;
 	private final GlobalVariable g_FlashEnableVar;
+	private final GlobalVariable g_OnDurationVar;
+	private final GlobalVariable g_OffDurationVar;
+	
+	private static final String ThreadFunctionName = "Thread_Flash";
+//	private static final String ThreadHandler = "Thread_Flash_Handler";
 	
 	public LockLEDInstallationContribution(InstallationAPIProvider apiProvider,
 			LockLEDInstallationView view, DataModel model) {
 		this.apiProvider = apiProvider;
 		this.view = view;
 		this.model = model;
+		
+		this.comms = apiProvider.getInstallationAPI().getInstallationNode(CommsInstallationContribution.class);
 		
 
 		this.g_FlashStringVar = new GlobalVariable() {
@@ -50,6 +56,30 @@ public class LockLEDInstallationContribution implements InstallationNodeContribu
 				return "flash_enable";
 			}
 		};
+		this.g_OnDurationVar = new GlobalVariable() {
+			
+			@Override
+			public Type getType() {
+				return Type.GLOBAL;
+			}
+			
+			@Override
+			public String getDisplayName() {
+				return "flash_duration_on";
+			}
+		};
+		this.g_OffDurationVar = new GlobalVariable() {
+			
+			@Override
+			public Type getType() {
+				return Type.GLOBAL;
+			}
+			
+			@Override
+			public String getDisplayName() {
+				return "flash_duration_off";
+			}
+		};
 	}
 	
 	public String GetFlashStringVariable() {
@@ -57,6 +87,12 @@ public class LockLEDInstallationContribution implements InstallationNodeContribu
 	}
 	public String GetFlashEnableVariable() {
 		return g_FlashEnableVar.getDisplayName();
+	}
+	public String GetFlashDurationOn() {
+		return g_OnDurationVar.getDisplayName();
+	}
+	public String GetFlashDurationOff() {
+		return g_OffDurationVar.getDisplayName();
 	}
 	
 	@Override
@@ -72,19 +108,20 @@ public class LockLEDInstallationContribution implements InstallationNodeContribu
 
 	@Override
 	public void generateScript(ScriptWriter writer) {
-//		writer.appendLine("global "+FlashStringVariable);
-//		writer.appendLine("global "+OnDurationVariable);
-//		writer.appendLine("global "+OffDurationVariable);
-//		writer.appendLine("global "+FlashEnableVariable);
-//		writer.appendLine("global "+FLASH_THREAD_HANDLE);
-//		writer.defineThread(THREAD_FUNCTION_NAME);
-		
-		
-//		writer.appendLine("thread ");
-//		writer.assign(FlashStringVariable, "\"\"");
-//		writer.assign(OnDurationVariable, Float.toString(DEF_ON_DURATION));
-//		writer.assign(OffDurationVariable, Float.toString(DEF_OFF_DURATION));
-		
+		writer.appendLine(GetFlashEnableVariable()+"=False");	//hopefully only init and can be changed
+		writer.appendLine("thread "+ThreadFunctionName+"():");
+			writer.appendLine("while(True):");
+				writer.appendLine("if("+GetFlashEnableVariable()+"):");
+//					writer.appendLine(comms.GetXmlRpcVariable()+".send_message("+GetFlashStringVariable()+")");
+//					writer.appendLine("sleep("+g_OnDurationVar.getDisplayName()+"/1000"+")");
+//					writer.appendLine(comms.GetXmlRpcVariable()+".send_message(\"@X;\")");
+//					writer.appendLine("sleep("+g_OffDurationVar.getDisplayName()+"/1000"+")");
+					writer.appendLine("set_standard_digital_out(1, not get_standard_digital_out(1))");
+					writer.appendLine("sleep(1)");
+				writer.appendLine("end");
+			writer.appendLine("end");
+		writer.appendLine("end");
+		writer.appendLine("run "+ThreadFunctionName+"()");
 	}
 
 }

@@ -36,13 +36,13 @@ public class LockLEDProgramView implements SwingProgramNodeView<LockLEDProgramCo
 											new JSlider(JSlider.HORIZONTAL,0, 9, 0)};
 	
 	private JCheckBox FlashBox = new JCheckBox("Flash", false);
-	private JSlider DurationSliders[] = {	new JSlider(JSlider.HORIZONTAL,0, 9, 0), 
-											new JSlider(JSlider.HORIZONTAL,0, 9, 0)};
+	private JSlider DurationSliders[] = {	new JSlider(JSlider.HORIZONTAL,0, 2000, 0), 
+											new JSlider(JSlider.HORIZONTAL,0, 2000, 0)};
 	
 	static String colors[] = {"Red   ", "Green", "Blue   "};
 	private JLabel value[] = {new JLabel("0%"), new JLabel("0%"), new JLabel("0%")};
 	private String durstring[] = {"On", "Off"};
-	private JLabel duration[] = {new JLabel("0.200s"), new JLabel("0.200s")};
+	private JLabel duration[] = {new JLabel("0s"), new JLabel("0s")};
 	
 	//constructor members
 	private final ViewAPIProvider apiProvider;
@@ -99,7 +99,7 @@ public class LockLEDProgramView implements SwingProgramNodeView<LockLEDProgramCo
 	public void SetDurationSliders(int dur[]) {
 		for (int i = 0; i < DurationSliders.length; i++) {
 			DurationSliders[i].setValue(dur[i]);
-			duration[i].setText(String.valueOf((1+dur[i])*0.200)+"s");
+			duration[i].setText(String.valueOf((dur[i])/1000)+"s");
 		}
 	}
 	
@@ -218,7 +218,7 @@ public class LockLEDProgramView implements SwingProgramNodeView<LockLEDProgramCo
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				float v = slider.getValue();
-				v = (float) ((1.0+v)*0.200);
+				v = (float) (v/1000);
 				val.setText(new DecimalFormat("#.###").format(v)+"s");
 			}
 		});
