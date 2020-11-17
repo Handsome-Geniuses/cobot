@@ -1,6 +1,7 @@
-package com.handsome.nosnhoj.impl.LockLED;
+package com.handsome.nosnhoj.impl.LockLED.ProgramNode;
 
 import com.handsome.nosnhoj.impl.Comms.Installation.CommsInstallationContribution;
+import com.handsome.nosnhoj.impl.LockLED.InstallationNode.LockLEDInstallationContribution;
 import com.ur.urcap.api.contribution.ProgramNodeContribution;
 import com.ur.urcap.api.contribution.program.ProgramAPIProvider;
 import com.ur.urcap.api.domain.data.DataModel;
@@ -14,6 +15,9 @@ public class LockLEDProgramContribution implements ProgramNodeContribution{
 	private final LockLEDProgramView view;
 	private final DataModel model;
 	private final UndoRedoManager undoRedoManager;
+	
+	private final LockLEDInstallationContribution installationContribution;
+	
 	private String title;
 	
 	private static final String KEY_ZONE = "zones";
@@ -32,8 +36,10 @@ public class LockLEDProgramContribution implements ProgramNodeContribution{
 		this.apiProvider = apiProvider;
 		this.view = view;
 		this.model = model;
+		this.installationContribution = apiProvider.getProgramAPI().getInstallationNode(LockLEDInstallationContribution.class);
 		this.undoRedoManager = this.apiProvider.getProgramAPI().getUndoRedoManager();
 		this.title = "led()";
+		
 	}
 	private CommsInstallationContribution GetCommsInstallationContribution() {
 		return apiProvider.getProgramAPI().getInstallationNode(CommsInstallationContribution.class);
@@ -129,15 +135,24 @@ public class LockLEDProgramContribution implements ProgramNodeContribution{
 
 	private String GetRGBCommand() {
 		int colors[] = GetColors();
-		String command = GetCommsInstallationContribution().GetXmlRpcVariable()+".send_message(";
-		command = command+"\"@Z"+Integer.toString(GetZone()+1)+";L";
-		command = command+Integer.toString(colors[0])+Integer.toString(colors[1])+Integer.toString(colors[2])+";\")";
+		String command = "\"@Z"+Integer.toString(GetZone()+1)+";L";
+		command = command+Integer.toString(colors[0])+Integer.toString(colors[1])+Integer.toString(colors[2])+";\"";
 		return command;
 	}
 	@Override
 	public void generateScript(ScriptWriter writer) {
 //		writer.assign("remove_this_later", "1");
-		writer.appendLine(GetRGBCommand());
+		String xmlrpc = GetCommsInstallationContribution().GetXmlRpcVariable();
+		String rgbcommand = GetRGBCommand();
+		writer.appendLine(installationContribution.GetFlashStringVariable()+"="+rgbcommand);
+		writer.appendLine(xmlrpc+".send_message("+installationContribution.GetFlashStringVariable()+")");
+//		if(!GetFlash()) {
+//			writer.appendLine(installationContribution.GetFlashEnableVariable()+"=False");
+//			writer.appendLine(xmlrpc+".send_message("+installationContribution.GetFlashStringVariable()+")");
+//		}
+//		else {
+//			writer.appendLine(installationContribution.GetFlashEnableVariable()+"=True");
+//		}
 	}
 
 }

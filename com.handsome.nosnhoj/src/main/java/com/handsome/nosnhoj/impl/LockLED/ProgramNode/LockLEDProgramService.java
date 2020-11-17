@@ -1,4 +1,4 @@
-package com.handsome.nosnhoj.impl.LockLED;
+package com.handsome.nosnhoj.impl.LockLED.ProgramNode;
 
 import java.util.Locale;
 

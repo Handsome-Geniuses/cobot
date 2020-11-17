@@ -1,4 +1,4 @@
-package com.handsome.nosnhoj.impl.LockLED;
+package com.handsome.nosnhoj.impl.LockLED.ProgramNode;
 
 import java.awt.Component;
 import java.awt.Dimension;

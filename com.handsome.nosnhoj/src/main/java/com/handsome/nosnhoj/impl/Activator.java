@@ -7,8 +7,8 @@ import com.handsome.nosnhoj.impl.Comms.Daemon.CommsDaemonService;
 import com.handsome.nosnhoj.impl.Comms.Installation.CommsInstallationService;
 import com.handsome.nosnhoj.impl.Comms.PortSetupProgram.PortSetupProgramService;
 import com.handsome.nosnhoj.impl.Comms.SendProgram.CommsProgramService;
-import com.handsome.nosnhoj.impl.LedControl.LedProgramNodeService;
-import com.handsome.nosnhoj.impl.LockLED.LockLEDProgramService;
+import com.handsome.nosnhoj.impl.LockLED.InstallationNode.LockLEDInstallationService;
+import com.handsome.nosnhoj.impl.LockLED.ProgramNode.LockLEDProgramService;
 import com.ur.urcap.api.contribution.DaemonService;
 import com.ur.urcap.api.contribution.installation.swing.SwingInstallationNodeService;
 import com.ur.urcap.api.contribution.program.swing.SwingProgramNodeService;
@@ -24,8 +24,10 @@ public class Activator implements BundleActivator {
 		CommsInstallationService installationNodeService = new CommsInstallationService(daemonService);
 
 		//host led node
-		context.registerService(SwingProgramNodeService.class, new LedProgramNodeService(), null);
+//		context.registerService(SwingProgramNodeService.class, new LedProgramNodeService(), null);
 		//guest led node
+		//installation before program just in case
+		context.registerService(SwingInstallationNodeService.class, new LockLEDInstallationService(), null);
 		context.registerService(SwingProgramNodeService.class, new LockLEDProgramService(), null);
 		
 		
