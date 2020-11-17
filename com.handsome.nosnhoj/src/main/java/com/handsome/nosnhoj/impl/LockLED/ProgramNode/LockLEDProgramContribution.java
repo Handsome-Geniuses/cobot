@@ -152,8 +152,8 @@ public class LockLEDProgramContribution implements ProgramNodeContribution{
 		}
 		else {
 			int dur[] = GetDurations(); //0-2000ms. need convert to seconds.
-			writer.appendLine(installationContribution.GetFlashDurationOn()+"="+Float.toString(dur[0]/1000));
-			writer.appendLine(installationContribution.GetFlashDurationOff()+"="+Float.toString(dur[1]/1000));
+			writer.appendLine(installationContribution.GetFlashDurationOn()+"="+Float.toString((float)(dur[0])/1000));
+			writer.appendLine(installationContribution.GetFlashDurationOff()+"="+Float.toString((float)(dur[1])/1000));
 			writer.appendLine(installationContribution.GetFlashEnableVariable()+"=True");
 		}
 	}

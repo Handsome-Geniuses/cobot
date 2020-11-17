@@ -108,16 +108,21 @@ public class LockLEDInstallationContribution implements InstallationNodeContribu
 
 	@Override
 	public void generateScript(ScriptWriter writer) {
-		writer.appendLine(GetFlashEnableVariable()+"=False");	//hopefully only init and can be changed
+		//defaults. hopefully they can be overwritten
+		writer.appendLine(GetFlashEnableVariable()+"=False");
+		writer.appendLine(GetFlashStringVariable()+"=\"$Hello There\"");
+		writer.appendLine(GetFlashDurationOn()+"=0.5");
+		writer.appendLine(GetFlashDurationOff()+"=0.5");
+		//thread to handle led
 		writer.appendLine("thread "+ThreadFunctionName+"():");
 			writer.appendLine("while(True):");
 				writer.appendLine("if("+GetFlashEnableVariable()+"):");
-//					writer.appendLine(comms.GetXmlRpcVariable()+".send_message("+GetFlashStringVariable()+")");
-//					writer.appendLine("sleep("+g_OnDurationVar.getDisplayName()+"/1000"+")");
-//					writer.appendLine(comms.GetXmlRpcVariable()+".send_message(\"@X;\")");
-//					writer.appendLine("sleep("+g_OffDurationVar.getDisplayName()+"/1000"+")");
-					writer.appendLine("set_standard_digital_out(1, not get_standard_digital_out(1))");
-					writer.appendLine("sleep(1)");
+					writer.appendLine(comms.GetXmlRpcVariable()+".send_message("+GetFlashStringVariable()+")");
+					writer.appendLine("sleep("+g_OnDurationVar.getDisplayName()+")");
+					writer.appendLine(comms.GetXmlRpcVariable()+".send_message(\"@X;\")");
+					writer.appendLine("sleep("+g_OffDurationVar.getDisplayName()+")");
+//					writer.appendLine("set_standard_digital_out(1, not get_standard_digital_out(1))");
+//					writer.appendLine("sleep(1)");
 				writer.appendLine("end");
 			writer.appendLine("end");
 		writer.appendLine("end");
