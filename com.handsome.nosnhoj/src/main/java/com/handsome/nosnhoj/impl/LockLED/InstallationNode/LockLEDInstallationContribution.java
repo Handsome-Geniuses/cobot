@@ -1,5 +1,6 @@
 package com.handsome.nosnhoj.impl.LockLED.InstallationNode;
 
+import com.handsome.nosnhoj.impl.util.GV;
 import com.handsome.nosnhoj.impl.Comms.Installation.CommsInstallationContribution;
 import com.ur.urcap.api.contribution.InstallationNodeContribution;
 import com.ur.urcap.api.contribution.installation.InstallationAPIProvider;
@@ -31,55 +32,10 @@ public class LockLEDInstallationContribution implements InstallationNodeContribu
 		
 		this.comms = apiProvider.getInstallationAPI().getInstallationNode(CommsInstallationContribution.class);
 		
-
-		this.g_FlashStringVar = new GlobalVariable() {
-			
-			@Override
-			public Type getType() {
-				return Type.GLOBAL;
-			}
-			
-			@Override
-			public String getDisplayName() {
-				return "flash_string_command";
-			}
-		};
-		this.g_FlashEnableVar = new GlobalVariable() {
-			
-			@Override
-			public Type getType() {
-				return Type.GLOBAL;
-			}
-			
-			@Override
-			public String getDisplayName() {
-				return "flash_enable";
-			}
-		};
-		this.g_OnDurationVar = new GlobalVariable() {
-			
-			@Override
-			public Type getType() {
-				return Type.GLOBAL;
-			}
-			
-			@Override
-			public String getDisplayName() {
-				return "flash_duration_on";
-			}
-		};
-		this.g_OffDurationVar = new GlobalVariable() {
-			
-			@Override
-			public Type getType() {
-				return Type.GLOBAL;
-			}
-			
-			@Override
-			public String getDisplayName() {
-				return "flash_duration_off";
-			}
-		};
+		this.g_FlashStringVar = new GV("flash_string_command");
+		this.g_FlashEnableVar = new GV("flash_enable");
+		this.g_OnDurationVar = new GV("flash_duration_on");
+		this.g_OffDurationVar = new GV("flash_duration_off");
 	}
 	
 	public String GetFlashStringVariable() {
@@ -88,10 +44,10 @@ public class LockLEDInstallationContribution implements InstallationNodeContribu
 	public String GetFlashEnableVariable() {
 		return g_FlashEnableVar.getDisplayName();
 	}
-	public String GetFlashDurationOn() {
+	public String GetFlashDurationOnVariable() {
 		return g_OnDurationVar.getDisplayName();
 	}
-	public String GetFlashDurationOff() {
+	public String GetFlashDurationOffVariable() {
 		return g_OffDurationVar.getDisplayName();
 	}
 	
@@ -108,11 +64,13 @@ public class LockLEDInstallationContribution implements InstallationNodeContribu
 
 	@Override
 	public void generateScript(ScriptWriter writer) {
-		//defaults. hopefully they can be overwritten
+		//global variable initializing
 		writer.appendLine(GetFlashEnableVariable()+"=False");
 		writer.appendLine(GetFlashStringVariable()+"=\"$Hello There\"");
-		writer.appendLine(GetFlashDurationOn()+"=0.5");
-		writer.appendLine(GetFlashDurationOff()+"=0.5");
+		writer.appendLine(GetFlashDurationOnVariable()+"=0.5");
+		writer.appendLine(GetFlashDurationOffVariable()+"=0.5");
+		
+		
 		//thread to handle led
 		writer.appendLine("thread "+ThreadFunctionName+"():");
 			writer.appendLine("while(True):");
@@ -121,8 +79,6 @@ public class LockLEDInstallationContribution implements InstallationNodeContribu
 					writer.appendLine("sleep("+g_OnDurationVar.getDisplayName()+")");
 					writer.appendLine(comms.GetXmlRpcVariable()+".send_message(\"@X;\")");
 					writer.appendLine("sleep("+g_OffDurationVar.getDisplayName()+")");
-//					writer.appendLine("set_standard_digital_out(1, not get_standard_digital_out(1))");
-//					writer.appendLine("sleep(1)");
 				writer.appendLine("end");
 			writer.appendLine("end");
 		writer.appendLine("end");

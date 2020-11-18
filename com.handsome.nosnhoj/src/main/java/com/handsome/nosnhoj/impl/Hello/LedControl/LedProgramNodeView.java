@@ -1,4 +1,4 @@
-package com.handsome.nosnhoj.impl.LedControl;
+package com.handsome.nosnhoj.impl.Hello.LedControl;
 
 import java.awt.Color;
 import java.awt.Component;
