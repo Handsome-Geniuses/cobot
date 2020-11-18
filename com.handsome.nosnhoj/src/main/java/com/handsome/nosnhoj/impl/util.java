@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.ur.urcap.api.contribution.installation.InstallationAPIProvider;
@@ -13,6 +14,8 @@ import com.ur.urcap.api.domain.function.FunctionException;
 import com.ur.urcap.api.domain.function.FunctionModel;
 import com.ur.urcap.api.domain.script.ScriptWriter;
 import com.ur.urcap.api.domain.variable.GlobalVariable;
+import com.ur.urcap.api.domain.variable.Variable;
+import com.ur.urcap.api.domain.variable.VariableModel;
 
 public class util {
 	//concatenates any types together.
@@ -89,6 +92,7 @@ public class util {
 			}
 		}	
 	}
+	
 	
 	//The same as GlobalVariable but can now create with one line.
 	public static class GV implements GlobalVariable{

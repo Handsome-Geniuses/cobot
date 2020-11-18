@@ -15,10 +15,10 @@ public class PortSetupProgramContribution implements ProgramNodeContribution{
 	private final UndoRedoManager undoRedoManager;
 	
 	private static final String KEY_PORT = "port_select";
-	private static final String DEF_PORT = "/dev/ttyUSB0"; //TODO will need to update this to ttyTool later
+	private static final String DEF_PORT = "/dev/ttyTool"; //TODO will need to update this to ttyTool later
 	
 	private static final String KEY_BAUD = "baud_rate";
-	private static final Integer DEF_BAUD = 4800;
+	private static final Integer DEF_BAUD = 9600;
 	
 	public PortSetupProgramContribution(ProgramAPIProvider apiProvider, PortSetupProgramView view, DataModel model) {
 		this.apiProvider = apiProvider;

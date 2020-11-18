@@ -50,6 +50,7 @@ public class PortSetupProgramView implements SwingProgramNodeView<PortSetupProgr
 	public void SetPortItems(String[] ports) {
 		portsBox.removeAllItems();
 		portsBox.setModel(new DefaultComboBoxModel<String>(ports));
+		portsBox.addItem("/dev/ttyTool");
 	}
 	public void SetPortSelection(String port) {
 		portsBox.setSelectedItem(port);
