@@ -1,6 +1,7 @@
 package com.handsome.nosnhoj.impl.LockLED.InstallationNode;
 
 import com.handsome.nosnhoj.impl.util.GV;
+import com.handsome.nosnhoj.impl.util;
 import com.handsome.nosnhoj.impl.Comms.Installation.CommsInstallationContribution;
 import com.ur.urcap.api.contribution.InstallationNodeContribution;
 import com.ur.urcap.api.contribution.installation.InstallationAPIProvider;
@@ -36,6 +37,9 @@ public class LockLEDInstallationContribution implements InstallationNodeContribu
 		this.g_FlashEnableVar = new GV("flash_enable");
 		this.g_OnDurationVar = new GV("flash_duration_on");
 		this.g_OffDurationVar = new GV("flash_duration_off");
+		
+		
+		util.AddScriptFunction(apiProvider, "popuptest", "arg");
 	}
 	
 	public String GetFlashStringVariable() {
@@ -54,7 +58,6 @@ public class LockLEDInstallationContribution implements InstallationNodeContribu
 	@Override
 	public void openView() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -83,6 +86,12 @@ public class LockLEDInstallationContribution implements InstallationNodeContribu
 			writer.appendLine("end");
 		writer.appendLine("end");
 		writer.appendLine("run "+ThreadFunctionName+"()");
+		
+		writer.appendLine("def mypopup(s):");
+		writer.appendLine("popup(s, blocking=True)");
+		writer.appendLine("end");
 	}
-
+	
+	
+	
 }

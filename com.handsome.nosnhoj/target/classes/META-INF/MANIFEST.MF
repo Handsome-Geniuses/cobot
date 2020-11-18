@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1605718777878
+Bnd-LastModified: 1605730151897
 Build-Jdk: 1.8.0_275
 Built-By: ur
 Bundle-Activator: com.handsome.nosnhoj.impl.Activator
@@ -21,12 +21,12 @@ Import-Package: com.ur.urcap.api.contribution;version="[1.8,2)",com.ur.u
  .swing;version="[1.7,2)",com.ur.urcap.api.contribution.toolbar;version=
  "[1.7,2)",com.ur.urcap.api.contribution.toolbar.swing;version="[1.7,2)"
  ,com.ur.urcap.api.domain;version="[1.9,2)",com.ur.urcap.api.domain.data
- ;version="[1.9,2)",com.ur.urcap.api.domain.script;version="[1.7,2)",com
- .ur.urcap.api.domain.undoredo;version="[1.7,2)",com.ur.urcap.api.domain
- .userinteraction;version="[1.8,2)",com.ur.urcap.api.domain.userinteract
- ion.inputvalidation;version="[1.7,2)",com.ur.urcap.api.domain.userinter
- action.keyboard;version="[1.7,2)",com.ur.urcap.api.domain.variable;vers
- ion="[1.7,2)",javax.swing,javax.swing.event,org.apache.xmlrpc;version="
- [3.1,4)",org.apache.xmlrpc.client;version="[3.1,4)",org.osgi.framework;
- version="[1.6,2)"
+ ;version="[1.9,2)",com.ur.urcap.api.domain.function;version="[1.7,2)",c
+ om.ur.urcap.api.domain.script;version="[1.7,2)",com.ur.urcap.api.domain
+ .undoredo;version="[1.7,2)",com.ur.urcap.api.domain.userinteraction;ver
+ sion="[1.8,2)",com.ur.urcap.api.domain.userinteraction.inputvalidation;
+ version="[1.7,2)",com.ur.urcap.api.domain.userinteraction.keyboard;vers
+ ion="[1.7,2)",com.ur.urcap.api.domain.variable;version="[1.7,2)",javax.
+ swing,javax.swing.event,org.apache.xmlrpc;version="[3.1,4)",org.apache.
+ xmlrpc.client;version="[3.1,4)",org.osgi.framework;version="[1.6,2)"
 Tool: Bnd-2.1.0.20130426-122213
