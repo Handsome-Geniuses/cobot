@@ -8,7 +8,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.ur.urcap.api.contribution.ContributionProvider;
-import com.ur.urcap.api.contribution.ViewAPIProvider;
 import com.ur.urcap.api.contribution.program.swing.SwingProgramNodeView;
 
 public class PortReadProgramView implements SwingProgramNodeView<PortReadProgramContribution>{
@@ -25,7 +24,7 @@ public class PortReadProgramView implements SwingProgramNodeView<PortReadProgram
 	private Box CreateNodeInfo() {
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
-		box.add(new JLabel("Whats up."));
+		box.add(new JLabel("Place this node into a thread. Will handle reading opened serial port. String is stored in get function."));
 		return box;
 	}
 

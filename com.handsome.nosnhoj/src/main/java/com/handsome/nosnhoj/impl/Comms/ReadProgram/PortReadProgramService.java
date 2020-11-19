@@ -18,8 +18,7 @@ public class PortReadProgramService implements SwingProgramNodeService<PortReadP
 
 	@Override
 	public void configureContribution(ContributionConfiguration configuration) {
-		// TODO Auto-generated method stub
-		
+		configuration.setChildrenAllowed(true);
 	}
 
 	@Override
@@ -35,7 +34,7 @@ public class PortReadProgramService implements SwingProgramNodeService<PortReadP
 	@Override
 	public PortReadProgramContribution createNode(ProgramAPIProvider apiProvider, PortReadProgramView view,
 			DataModel model, CreationContext context) {
-		return new PortReadProgramContribution();
+		return new PortReadProgramContribution(apiProvider);
 	}
 	
 

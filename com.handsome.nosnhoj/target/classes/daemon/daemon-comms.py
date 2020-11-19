@@ -5,8 +5,11 @@ import sys
 import serial
 import serial.tools.list_ports
 import atexit
+import threading
 
 ser = serial.Serial()
+read_string_buffer = "~"
+stopper = threading.Event()
 
 #returns a string. have java convert to string array
 def get_ports():
@@ -33,9 +36,16 @@ def send_message(s="default message"):
     else: 
         return "Port not opened"
 
-#reads from arduino. using '\n' to indicate message over.
-#problem with this is readline is blocking
-#think this will be okay if function is ran through a thread?
+#running calls to this function in a thread doesn't work.
+#the rpc is stuck here and can't execute other functions.
+#store message in buffer. reset the buffer, return stored
+#this way, only received once
+def get_message():
+    global read_string_buffer
+    s = read_string_buffer
+    read_string_buffer = "~"
+    return s
+
 def read_message():
     if(ser.is_open):
         try:
@@ -44,9 +54,9 @@ def read_message():
             s=s[:-1]
             return str(s)
         except:
-            return "Could not read"
+            return "could not read for whatever reason"
     else:
-        return "Port not opened"
+        return "Port not opened doiiiii"
 
 def msg_dump():
     if(ser.is_open):
@@ -64,6 +74,7 @@ def port_open(port='/dev/ttyUSB0', baud=9600):
         port_close()
         time.sleep(0.5)
     ser.baudrate=baud
+    # ser.timeout=0.2
     ser.setPort(port)
     try:
         ser.open()
@@ -83,27 +94,41 @@ def port_close():
             ser.close()
             return "closed"
         except:
-            return "could not close properly"
+            return "nothing to close properly"
 
-# if __name__=="__main__":
-#     import threading
-#     stop = threading.Event()
-#     def threadtest():
-#         while(True):
-#             print(str(read_message()))
-#             if(stop.is_set()):
-#                 break
-#     print(port_open())
-#     print(msg_dump())
-#     th = threading.Thread(target=threadtest)
-#     th.start()
-#     try:
-#         while(1):
-#             time.sleep(2)
-#             print("hello")
-#             pass
-#     finally:
-#         stop.set()
+@atexit.register
+def Kill_Thread():
+    stopper.set()
+
+def Thread_Reader():
+    global read_string_buffer
+    #wait till port has been opened
+    while(ser.is_open == False):
+        time.sleep(0.1)
+    #main thread here
+    while(not stopper.is_set()):
+        read_string_buffer=read_message()   #read till newline
+        #wait till someone grabs the message before grabbing more
+        #buffer set to ~ when message is grabbed
+        while(not stopper.is_set() and read_string_buffer!="~"):
+            time.sleep(0.1)
+    
+
+thread_start = threading.Thread(target=Thread_Reader)
+thread_start.start()
+
+# print(port_open())
+# try:
+#     while(True):
+#         msg = get_message()
+#         if(msg is not "~"):
+#             if(msg == "hi"):
+#                 print("whatsup")
+#             else:
+#                 print(msg)
+# finally:
+#     stopper.set()
+
 
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 from SocketServer import ThreadingMixIn
@@ -118,7 +143,7 @@ class MultithreadedSimpleXMLRPCServer(ThreadingMixIn, SimpleXMLRPCServer):
 server = MultithreadedSimpleXMLRPCServer(("127.0.0.1", 40405))
 server.RequestHandlerClass.protocol_version = "HTTP/1.1"
 server.register_function(send_message, "send_message")
-server.register_function(read_message, "read_message")
+server.register_function(get_message, "get_message")
 server.register_function(msg_dump, "msg_dump")
 server.register_function(get_ports, "get_ports")
 server.register_function(port_open, "port_open")

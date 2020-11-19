@@ -76,6 +76,7 @@ public class PortSetupProgramContribution implements ProgramNodeContribution{
 			String[] portArray = null;
 			portArray = portString.split(",");
 			view.SetPortItems(portArray);
+			view.SetBaudRate(GetBaud());
 //			view.SetPortItems(GetInstallationContribution().GetXmlRpc().GetPorts());
 		} 
 		catch (Exception e) {

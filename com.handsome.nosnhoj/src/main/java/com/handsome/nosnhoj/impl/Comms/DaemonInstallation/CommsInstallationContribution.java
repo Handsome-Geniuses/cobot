@@ -1,5 +1,7 @@
 package com.handsome.nosnhoj.impl.Comms.DaemonInstallation;
 
+import com.handsome.nosnhoj.impl.util.GV;
+import com.handsome.nosnhoj.impl.util;
 import com.handsome.nosnhoj.impl.Comms.Daemon.CommsDaemonService;
 import com.handsome.nosnhoj.impl.Comms.Daemon.CommsXmlRpc;
 import com.ur.urcap.api.contribution.DaemonContribution;
@@ -12,6 +14,7 @@ import com.ur.urcap.api.domain.userinteraction.inputvalidation.InputValidationFa
 import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardInputCallback;
 import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardInputFactory;
 import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardTextInput;
+import com.ur.urcap.api.domain.variable.GlobalVariable;
 
 import java.awt.*;
 import java.util.Timer;
@@ -28,6 +31,11 @@ public class CommsInstallationContribution implements InstallationNodeContributi
 	
 	private static final String KEY_INPUT = "user_input";
 	private static final String DEF_INPUT = "msg";
+	
+	private static final String VAR_READ_STRING_VARIABLE = "read_string_buffer";
+	private static final String FUN_GET_READ_STRING = "get_read_string";
+	
+	private final GlobalVariable g_READ_STRING_VARIABLE;
 
 	private DataModel model;
 
@@ -46,6 +54,10 @@ public class CommsInstallationContribution implements InstallationNodeContributi
 		this.view = view;
 		this.daemonService = daemonService;
 		this.model = model;
+		
+		this.g_READ_STRING_VARIABLE = new GV(VAR_READ_STRING_VARIABLE);
+		util.AddScriptFunction(apiProvider, FUN_GET_READ_STRING);
+		
 		xmlRpcDaemonInterface = new CommsXmlRpc("127.0.0.1", PORT);
 		if (context.getNodeCreationType() == CreationContext.NodeCreationType.NEW) {
 		}
@@ -80,12 +92,7 @@ public class CommsInstallationContribution implements InstallationNodeContributi
 		}
 	}
 
-	@Override
-	public void generateScript(ScriptWriter writer) {
-		// Apply the settings to the daemon on program start in the Installation pre-amble
-		writer.assign(XMLRPC_VARIABLE, "rpc_factory(\"xmlrpc\", \"http://127.0.0.1:" + PORT + "/RPC2\")");		
-//		writer.appendLine(XMLRPC_VARIABLE + ".set_title(\"" + GetUserInput() + "\")");
-	}
+
 
 	private void UpdateStatusUI() {
 		DaemonContribution.State state = getDaemonState();
@@ -209,5 +216,25 @@ public class CommsInstallationContribution implements InstallationNodeContributi
 
 	public CommsXmlRpc GetXmlRpc() {
 		return xmlRpcDaemonInterface;
+	}
+	
+	public String GetVarReadString() {
+		return g_READ_STRING_VARIABLE.getDisplayName();
+	}
+	public String GetFunGetReadString() {
+		return FUN_GET_READ_STRING;
+	}
+	
+	
+	@Override
+	public void generateScript(ScriptWriter writer) {
+		// Apply the settings to the daemon on program start in the Installation pre-amble
+		writer.assign(XMLRPC_VARIABLE, "rpc_factory(\"xmlrpc\", \"http://127.0.0.1:" + PORT + "/RPC2\")");	
+		
+		writer.appendLine(VAR_READ_STRING_VARIABLE+"=\"stringreadvar\"");
+		writer.appendLine("def "+FUN_GET_READ_STRING+"():");
+			writer.appendLine("return "+VAR_READ_STRING_VARIABLE); 
+		writer.appendLine("end");
+		
 	}
 }
