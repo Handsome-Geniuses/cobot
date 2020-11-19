@@ -1,6 +1,6 @@
 package com.handsome.nosnhoj.impl.Comms.PortSetupProgram;
 
-import com.handsome.nosnhoj.impl.Comms.Installation.CommsInstallationContribution;
+import com.handsome.nosnhoj.impl.Comms.DaemonInstallation.CommsInstallationContribution;
 import com.ur.urcap.api.contribution.ProgramNodeContribution;
 import com.ur.urcap.api.contribution.program.ProgramAPIProvider;
 import com.ur.urcap.api.domain.data.DataModel;

@@ -2,7 +2,7 @@ package com.handsome.nosnhoj.impl.LockLED.InstallationNode;
 
 import com.handsome.nosnhoj.impl.util.GV;
 import com.handsome.nosnhoj.impl.util;
-import com.handsome.nosnhoj.impl.Comms.Installation.CommsInstallationContribution;
+import com.handsome.nosnhoj.impl.Comms.DaemonInstallation.CommsInstallationContribution;
 import com.ur.urcap.api.contribution.InstallationNodeContribution;
 import com.ur.urcap.api.contribution.installation.InstallationAPIProvider;
 import com.ur.urcap.api.domain.data.DataModel;
@@ -39,7 +39,7 @@ public class LockLEDInstallationContribution implements InstallationNodeContribu
 		this.g_OffDurationVar = new GV("flash_duration_off");
 		
 		
-		util.AddScriptFunction(apiProvider, "popuptest", "arg");
+		util.AddScriptFunction(apiProvider, "mypopup", "arg");
 	}
 	
 	public String GetFlashStringVariable() {

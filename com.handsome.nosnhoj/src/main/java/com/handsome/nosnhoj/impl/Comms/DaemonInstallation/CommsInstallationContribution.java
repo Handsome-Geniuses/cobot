@@ -1,4 +1,4 @@
-package com.handsome.nosnhoj.impl.Comms.Installation;
+package com.handsome.nosnhoj.impl.Comms.DaemonInstallation;
 
 import com.handsome.nosnhoj.impl.Comms.Daemon.CommsDaemonService;
 import com.handsome.nosnhoj.impl.Comms.Daemon.CommsXmlRpc;

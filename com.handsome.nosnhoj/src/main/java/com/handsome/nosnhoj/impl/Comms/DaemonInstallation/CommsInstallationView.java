@@ -1,4 +1,4 @@
-package com.handsome.nosnhoj.impl.Comms.Installation;
+package com.handsome.nosnhoj.impl.Comms.DaemonInstallation;
 
 import com.ur.urcap.api.contribution.ViewAPIProvider;
 import com.ur.urcap.api.contribution.installation.swing.SwingInstallationNodeView;

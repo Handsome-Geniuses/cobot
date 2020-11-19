@@ -1,6 +1,6 @@
 package com.handsome.nosnhoj.impl.LockLED.ProgramNode;
 
-import com.handsome.nosnhoj.impl.Comms.Installation.CommsInstallationContribution;
+import com.handsome.nosnhoj.impl.Comms.DaemonInstallation.CommsInstallationContribution;
 import com.handsome.nosnhoj.impl.LockLED.InstallationNode.LockLEDInstallationContribution;
 import com.ur.urcap.api.contribution.ProgramNodeContribution;
 import com.ur.urcap.api.contribution.program.ProgramAPIProvider;

@@ -4,8 +4,9 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 import com.handsome.nosnhoj.impl.Comms.Daemon.CommsDaemonService;
-import com.handsome.nosnhoj.impl.Comms.Installation.CommsInstallationService;
+import com.handsome.nosnhoj.impl.Comms.DaemonInstallation.CommsInstallationService;
 import com.handsome.nosnhoj.impl.Comms.PortSetupProgram.PortSetupProgramService;
+import com.handsome.nosnhoj.impl.Comms.ReadProgram.PortReadProgramService;
 import com.handsome.nosnhoj.impl.Comms.SendProgram.CommsProgramService;
 import com.handsome.nosnhoj.impl.LockLED.InstallationNode.LockLEDInstallationService;
 import com.handsome.nosnhoj.impl.LockLED.ProgramNode.LockLEDProgramService;
@@ -30,6 +31,7 @@ public class Activator implements BundleActivator {
 		context.registerService(SwingInstallationNodeService.class, new LockLEDInstallationService(), null);
 		context.registerService(SwingProgramNodeService.class, new LockLEDProgramService(), null);
 		
+		context.registerService(SwingProgramNodeService.class, new PortReadProgramService(), null);
 		
 		context.registerService(SwingInstallationNodeService.class, installationNodeService, null);
 		context.registerService(SwingProgramNodeService.class, new PortSetupProgramService(), null);
