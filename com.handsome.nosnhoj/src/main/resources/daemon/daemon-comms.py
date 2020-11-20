@@ -71,8 +71,9 @@ def msg_dump():
 #opens port given port
 def port_open(port='/dev/ttyUSB0', baud=9600):
     if(ser.is_open == True):
-        port_close()
-        time.sleep(0.5)
+        # port_close()
+        # time.sleep(0.5)
+        return "Port already open. Close first to change."
     ser.baudrate=baud
     # ser.timeout=0.2
     ser.setPort(port)
@@ -107,18 +108,19 @@ def Thread_Reader():
         time.sleep(0.1)
     #main thread here
     while(not stopper.is_set()):
-        read_string_buffer=read_message()   #read till newline
         #wait till someone grabs the message before grabbing more
         #buffer set to ~ when message is grabbed
         while(not stopper.is_set() and read_string_buffer!="~"):
             time.sleep(0.1)
-    
-
+        read_string_buffer=read_message()   #read till newline
+       
+        
 thread_start = threading.Thread(target=Thread_Reader)
 thread_start.start()
 
 # print(port_open())
 # try:
+#     msg_dump()
 #     while(True):
 #         msg = get_message()
 #         if(msg is not "~"):

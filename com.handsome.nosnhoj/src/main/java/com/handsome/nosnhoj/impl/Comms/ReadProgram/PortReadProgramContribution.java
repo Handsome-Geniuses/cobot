@@ -8,9 +8,13 @@ import com.ur.urcap.api.domain.script.ScriptWriter;
 public class PortReadProgramContribution implements ProgramNodeContribution{
 	
 	private final String VAR_READ_STRING_VARIABLE;
+	private final String XML_RPC_VARIABLE;
+	private final CommsInstallationContribution comms;
 	
 	public PortReadProgramContribution(ProgramAPIProvider apiProvider) {
-		this.VAR_READ_STRING_VARIABLE = apiProvider.getProgramAPI().getInstallationNode(CommsInstallationContribution.class).GetVarReadString();
+		this.comms = apiProvider.getProgramAPI().getInstallationNode(CommsInstallationContribution.class);
+		this.VAR_READ_STRING_VARIABLE = this.comms.GetVarReadString();
+		this.XML_RPC_VARIABLE = this.comms.GetXmlRpcVariable();
 	}
 	
 	@Override
@@ -38,14 +42,15 @@ public class PortReadProgramContribution implements ProgramNodeContribution{
 
 	@Override
 	public void generateScript(ScriptWriter writer) {
+		writer.appendLine("dae_ard.msg_dump()");
 		writer.appendLine("while(True):");
-			writer.appendLine(VAR_READ_STRING_VARIABLE+"=dae_ard.get_message()");	//TODO replace dae_ard with the installation variable
+			writer.appendLine(VAR_READ_STRING_VARIABLE+"="+XML_RPC_VARIABLE+".get_message()");
 //			writer.writeChildren();
 			writer.appendLine("if("+VAR_READ_STRING_VARIABLE+"!=\"~\""+"):");
 				writer.writeChildren();
 			writer.appendLine("end");
 //		writer.appendLine("popup(dae_ard.read_message(), blocking=True)");
-		writer.appendLine("end");
+		writer.appendLine("end"); 
 	}
 
 }
