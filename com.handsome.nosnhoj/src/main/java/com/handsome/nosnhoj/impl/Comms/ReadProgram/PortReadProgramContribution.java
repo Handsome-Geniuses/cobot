@@ -31,7 +31,7 @@ public class PortReadProgramContribution implements ProgramNodeContribution{
 
 	@Override
 	public String getTitle() {
-		return "GetString";
+		return "Message Handler";
 	}
 
 	@Override

@@ -34,7 +34,7 @@ public class CommsInstallationContribution implements InstallationNodeContributi
 	
 	private static final String VAR_READ_STRING_VARIABLE = "read_string_buffer";
 	private static final String FUN_GET_READ_STRING = "get_read_string";
-//	private static final String FUN_MSG_CHECK = "msg_check";
+	private static final String FUN_MSG_CHECK = "msg_is";
 	
 	private final GlobalVariable g_READ_STRING_VARIABLE;
 
@@ -58,7 +58,7 @@ public class CommsInstallationContribution implements InstallationNodeContributi
 		
 		this.g_READ_STRING_VARIABLE = new GV(VAR_READ_STRING_VARIABLE);
 		util.AddScriptFunction(apiProvider, FUN_GET_READ_STRING);
-//		util.AddScriptFunction(apiProvider, FUN_MSG_CHECK, "msg");
+		util.AddScriptFunction(apiProvider, FUN_MSG_CHECK, "msg");
 		
 		xmlRpcDaemonInterface = new CommsXmlRpc("127.0.0.1", PORT);
 		if (context.getNodeCreationType() == CreationContext.NodeCreationType.NEW) {
@@ -238,12 +238,12 @@ public class CommsInstallationContribution implements InstallationNodeContributi
 			writer.appendLine("return "+VAR_READ_STRING_VARIABLE); 
 		writer.appendLine("end");
 		
-//		writer.appendLine("def "+FUN_MSG_CHECK+"(s):");
-//			writer.appendLine("if(s=="+VAR_READ_STRING_VARIABLE+"):");
-//				writer.appendLine("return True");
-//			writer.appendLine("else:");
-//				writer.appendLine("return False");
-//			writer.appendLine("end");
-//		writer.appendLine("end");
+		writer.appendLine("def "+FUN_MSG_CHECK+"(s):");
+			writer.appendLine("if(s=="+VAR_READ_STRING_VARIABLE+"):");
+				writer.appendLine("return True");
+			writer.appendLine("else:");
+				writer.appendLine("return False");
+			writer.appendLine("end");
+		writer.appendLine("end");
 	}
 }
