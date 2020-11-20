@@ -17,14 +17,15 @@ public class PortReadProgramView implements SwingProgramNodeView<PortReadProgram
 	@Override
 	public void buildUI(JPanel panel, ContributionProvider<PortReadProgramContribution> provider) {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		panel.add(CreateNodeInfo());
-		
+		panel.add(CreateLabel("Place this node in a thread."));
+		panel.add(CreateLabel("Messages will be read into get_read_string() function."));
+		panel.add(CreateLabel("Children node only ran after a message is received."));
 	}
 	
-	private Box CreateNodeInfo() {
+	private Box CreateLabel(String desc) {
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
-		box.add(new JLabel("Place this node into a thread. Will handle reading opened serial port. String is stored in get function."));
+		box.add(new JLabel(desc));
 		return box;
 	}
 

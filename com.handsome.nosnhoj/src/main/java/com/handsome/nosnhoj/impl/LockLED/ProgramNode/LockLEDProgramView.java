@@ -169,10 +169,12 @@ public class LockLEDProgramView implements SwingProgramNodeView<LockLEDProgramCo
 				if(e.getStateChange()==ItemEvent.SELECTED) {
 					DurationSliders[0].setEnabled(true);
 					DurationSliders[1].setEnabled(true);
+					provider.get().OnFlashChange(true);
 				}
 				else {
 					DurationSliders[0].setEnabled(false);
 					DurationSliders[1].setEnabled(false);
+					provider.get().OnFlashChange(false);
 				}
 			}
 		});
@@ -195,6 +197,7 @@ public class LockLEDProgramView implements SwingProgramNodeView<LockLEDProgramCo
 				v = (v<1)?(0):(10*(v));
 				val.setText(Integer.toString(v)+"%");
 //				provider.get().OnColorChange(Intvalue[0].getText(), RGBSliders[1].getValue(), RGBSliders[2].getValue());
+				provider.get().OnColorChange(GetSliderRGB());
 			}
 		});
 		
@@ -220,6 +223,7 @@ public class LockLEDProgramView implements SwingProgramNodeView<LockLEDProgramCo
 				float v = slider.getValue();
 				v = (float) (v/1000);
 				val.setText(new DecimalFormat("#.###").format(v)+"s");
+				provider.get().OnDurationChange(GetSliderDurations());
 			}
 		});
 		

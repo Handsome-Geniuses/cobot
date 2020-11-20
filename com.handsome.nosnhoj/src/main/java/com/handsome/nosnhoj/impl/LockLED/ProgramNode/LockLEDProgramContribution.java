@@ -1,5 +1,7 @@
 package com.handsome.nosnhoj.impl.LockLED.ProgramNode;
 
+import java.util.Arrays;
+
 import com.handsome.nosnhoj.impl.Comms.DaemonInstallation.CommsInstallationContribution;
 import com.handsome.nosnhoj.impl.LockLED.InstallationNode.LockLEDInstallationContribution;
 import com.ur.urcap.api.contribution.ProgramNodeContribution;
@@ -46,56 +48,58 @@ public class LockLEDProgramContribution implements ProgramNodeContribution{
 	}
 	
 	
-	//zone functions
-	private void SetZone(final int z) {
-		model.set(KEY_ZONE, z);
-	}
+	//Get from model functions
 	private int GetZone() {
 		return model.get(KEY_ZONE, DEF_ZONE);
 	}
+	private int[] GetColors() {
+		return model.get(KEY_COLOR, DEF_VALUES);
+	}
+	private int[] GetDurations() {
+		return model.get(KEY_DURATION, DEF_DURATION);
+	}
+	private boolean GetFlash() {
+		return model.get(KEY_FLASH, DEF_FLASH);
+	}
+	
+	//record changes and setting model
 	public void OnZoneSelect(final int z) {
 		undoRedoManager.recordChanges(new UndoableChanges() {
 			
 			@Override
 			public void executeChanges() {
-				SetZone(z);
+				model.set(KEY_ZONE, z);
 			}
 		});
 	}
-	
-	//RGB functions
-	private void SetColors(int r, int g, int b) {
-		int temp[] = {r, g, b};
-		model.set(KEY_COLOR, temp);
-	}
-	private int[] GetColors() {
-		return model.get(KEY_COLOR, DEF_VALUES);
-	}
-	public void OnColorChange(final int r, final int g, final int b) {
+	public void OnColorChange(final int[] rgb) {
 		undoRedoManager.recordChanges(new UndoableChanges() {
 			
 			@Override
 			public void executeChanges() {
-				SetColors(r, g, b);
+				model.set(KEY_COLOR, rgb);
+			}
+		});
+	}
+	public void OnDurationChange(final int[] dur) {
+		undoRedoManager.recordChanges(new UndoableChanges() {
+			
+			@Override
+			public void executeChanges() {
+				model.set(KEY_DURATION, dur);
+			}
+		});
+	}
+	public void OnFlashChange(final boolean f) {
+		undoRedoManager.recordChanges(new UndoableChanges() {
+			
+			@Override
+			public void executeChanges() {
+				model.set(KEY_FLASH, f);
 			}
 		});
 	}
 	
-	//flash functions
-//	private void SetFlash(boolean f) {
-//		model.set(KEY_FLASH, f);
-//	}
-	private boolean GetFlash() {
-		return model.get(KEY_FLASH, DEF_FLASH);
-	}
-	
-	//duration functions
-//	private void SetDurations(int[] d) {
-//		model.set(KEY_DURATION, d);
-//	}
-	private int[] GetDurations() {
-		return model.get(KEY_DURATION, DEF_DURATION);
-	}
 	
 	@Override
 	public void openView() {
@@ -107,24 +111,22 @@ public class LockLEDProgramContribution implements ProgramNodeContribution{
 
 	@Override
 	public void closeView() {
-		model.set(KEY_COLOR, view.GetSliderRGB());
-		model.set(KEY_FLASH, view.GetFlashStatus());
-		model.set(KEY_DURATION, view.GetSliderDurations());
-		
-		int colors[]=GetColors();
-		String s = "led(Z"+Integer.toString(GetZone()+1)+"L"+Integer.toString(colors[0])+Integer.toString(colors[1])+Integer.toString(colors[2]);
-		if(GetFlash()) {
-			s=s+"f)";
-		}
-		else {
-			s=s+")";
-		}
-		title=s;
+//		
+//		//only changing the getTitle on closing. I felt it was a bit laggy constantly updating? probably imagination
+//		int colors[]=GetColors();
+//		String s = "led(Z"+Integer.toString(GetZone()+1)+"L"+Integer.toString(colors[0])+Integer.toString(colors[1])+Integer.toString(colors[2]);
+//		if(GetFlash()) {
+//			s=s+"f)";
+//		}
+//		else {
+//			s=s+")";
+//		}
+//		title=s;
 	}
 
 	@Override
 	public String getTitle() {
-		return title;
+		return "led("+Arrays.toString(GetColors()).replaceAll("\\s", "")+(GetFlash()==true?"f)":")");
 	}
 
 	@Override
