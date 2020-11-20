@@ -42,7 +42,8 @@ public class PortReadProgramContribution implements ProgramNodeContribution{
 
 	@Override
 	public void generateScript(ScriptWriter writer) {
-		writer.appendLine("dae_ard.msg_dump()");
+		writer.appendLine(XML_RPC_VARIABLE+".msg_dump()");
+		writer.appendLine(XML_RPC_VARIABLE+".get_message()");
 		writer.appendLine("while(True):");
 			writer.appendLine(VAR_READ_STRING_VARIABLE+"="+XML_RPC_VARIABLE+".get_message()");
 //			writer.writeChildren();

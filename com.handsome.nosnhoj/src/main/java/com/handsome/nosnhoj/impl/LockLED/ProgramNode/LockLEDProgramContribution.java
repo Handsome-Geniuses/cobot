@@ -131,7 +131,7 @@ public class LockLEDProgramContribution implements ProgramNodeContribution{
 
 	@Override
 	public boolean isDefined() {
-		return view.isZoneSelected();
+		return true;
 //		return true; //true for now
 	}
 

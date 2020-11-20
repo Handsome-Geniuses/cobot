@@ -24,7 +24,7 @@ public class CommsProgramService implements SwingProgramNodeService<CommsProgram
 
 	@Override
 	public String getTitle(Locale locale) {
-		return "Comms";
+		return "Port Send";
 	}
 
 	@Override
