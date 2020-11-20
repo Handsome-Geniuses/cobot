@@ -65,6 +65,7 @@ void ReadWrite(){
 void TypeSend(){
     if(Serial.available()){
         char c = Serial.read();
+        if(c=='\b') return;
         rs485.write(c);
         print(c);
     } 
