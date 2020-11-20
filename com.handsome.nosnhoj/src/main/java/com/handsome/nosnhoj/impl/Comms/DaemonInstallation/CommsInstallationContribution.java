@@ -227,7 +227,7 @@ public class CommsInstallationContribution implements InstallationNodeContributi
 		return FUN_GET_READ_STRING;
 	}
 	
-	
+	 
 	@Override
 	public void generateScript(ScriptWriter writer) {
 		// Apply the settings to the daemon on program start in the Installation pre-amble
