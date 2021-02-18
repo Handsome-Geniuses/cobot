@@ -7,9 +7,10 @@
 #define PIN_BTN2 A2
 #define print(s) Serial.print(s)
 #define println(s) Serial.println(s)
-#define debounce_btn 500
+#define debounce_btn 150
 
 SoftwareSerial rs485(11,10);
+// SoftwareSerial rs485(2,3);
 
 void ReadWrite();
 void DelmitMe();
@@ -53,9 +54,10 @@ void setup() {
 
 void loop() {
     // zones[z1].Run(0,0,1,4,4);
-    DelmitMe();
-    BtnLedTest();
-    TypeSend();
+    // DelmitMe();
+    // BtnLedTest();
+    // TypeSend();
+    ReadWrite();
 }
 
 void ReadWrite(){
@@ -71,23 +73,18 @@ void TypeSend(){
     } 
 }
 void BtnLedTest(){
-    if(digitalRead(PIN_BTN)==HIGH){
-        digitalWrite(PIN_LED, LOW);
+    if(btn_debouncer.Done(true)){
+        if(digitalRead(PIN_BTN)==LOW){
+            rs485.write("b45\n");
+            btn_debouncer.Reset();
+            btn_debouncer.Start();
+        }
+        if(digitalRead(PIN_BTN2)==LOW){
+            rs485.write("bA2\n");
+            btn_debouncer.Reset();
+            btn_debouncer.Start();
+        }
     }
-    else if(btn_debouncer.Done(true)){
-        // rs485.write(String("b"+String(PIN_BTN)+"\n").c_str());
-        // rs485.write("hi\n");
-        rs485.write("b45\n");
-        digitalWrite(PIN_LED, HIGH);
-        println("pressed!");
-        btn_debouncer.Reset();
-        btn_debouncer.Start();
-    }
-    if(digitalRead(PIN_BTN2)==LOW && btn_debouncer.Done(true)){
-        rs485.write("bA2\n");
-        btn_debouncer.Reset();
-        btn_debouncer.Start();
-    }   
 }
 
 void DelmitMe(){

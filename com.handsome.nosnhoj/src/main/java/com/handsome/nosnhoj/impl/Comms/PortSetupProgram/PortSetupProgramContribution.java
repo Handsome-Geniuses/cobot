@@ -91,7 +91,7 @@ public class PortSetupProgramContribution implements ProgramNodeContribution{
 
 	@Override
 	public String getTitle() {
-		return "open("+GetPort()+")";
+		return "open("+GetPort().substring(8)+")";
 	}
 
 	@Override

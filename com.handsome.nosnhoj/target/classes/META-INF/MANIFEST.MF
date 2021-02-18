@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1605899236613
-Build-Jdk: 1.8.0_275
-Built-By: ur
+Bnd-LastModified: 1613677894032
+Build-Jdk: 14.0.2
+Built-By: johnson.le
 Bundle-Activator: com.handsome.nosnhoj.impl.Activator
 Bundle-Category: URCap
 Bundle-ContactAddress: 1234 Handsome Street
