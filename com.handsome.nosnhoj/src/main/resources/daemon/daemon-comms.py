@@ -68,6 +68,10 @@ def msg_dump():
     else:
         return "Port not opened"
 
+#checks if a port is open
+def port_check():
+    return ser.is_open
+
 #opens port given port
 def port_open(port='/dev/ttyUSB0', baud=9600):
     if(ser.is_open == True):
@@ -150,4 +154,5 @@ server.register_function(msg_dump, "msg_dump")
 server.register_function(get_ports, "get_ports")
 server.register_function(port_open, "port_open")
 server.register_function(port_close, "port_close")
+server.register_function(port_check, "port_check")
 server.serve_forever()

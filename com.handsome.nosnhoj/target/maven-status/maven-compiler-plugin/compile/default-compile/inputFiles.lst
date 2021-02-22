@@ -21,11 +21,13 @@
 /media/sf_vmshare/cobot/com.handsome.nosnhoj/src/main/java/com/handsome/nosnhoj/impl/Paint/PaintToolbar/PaintToolbarContribution.java
 /media/sf_vmshare/cobot/com.handsome.nosnhoj/src/main/java/com/handsome/nosnhoj/impl/Activator.java
 /media/sf_vmshare/cobot/com.handsome.nosnhoj/src/main/java/com/handsome/nosnhoj/impl/Hello/LedControl/LedProgramNodeService.java
+/media/sf_vmshare/cobot/com.handsome.nosnhoj/src/main/java/com/handsome/nosnhoj/impl/Comms/CommsToolBar/CommsToolbarContribution.java
 /media/sf_vmshare/cobot/com.handsome.nosnhoj/src/main/java/com/handsome/nosnhoj/impl/Comms/DaemonInstallation/CommsInstallationView.java
 /media/sf_vmshare/cobot/com.handsome.nosnhoj/src/main/java/com/handsome/nosnhoj/impl/Comms/PortSetupProgram/PortSetupProgramView.java
 /media/sf_vmshare/cobot/com.handsome.nosnhoj/src/main/java/com/handsome/nosnhoj/impl/Comms/SendProgram/CommsProgramContribution.java
 /media/sf_vmshare/cobot/com.handsome.nosnhoj/src/main/java/com/handsome/nosnhoj/impl/LockLED/InstallationNode/LockLEDInstallationContribution.java
 /media/sf_vmshare/cobot/com.handsome.nosnhoj/src/main/java/com/handsome/nosnhoj/impl/Hello/HelloInstallation/HelloInstallationNodeContribution.java
+/media/sf_vmshare/cobot/com.handsome.nosnhoj/src/main/java/com/handsome/nosnhoj/impl/Comms/CommsToolBar/CommsToolbarService.java
 /media/sf_vmshare/cobot/com.handsome.nosnhoj/src/main/java/com/handsome/nosnhoj/impl/Comms/Daemon/CommsDaemonService.java
 /media/sf_vmshare/cobot/com.handsome.nosnhoj/src/main/java/com/handsome/nosnhoj/impl/Comms/SendProgram/CommsProgramService.java
 /media/sf_vmshare/cobot/com.handsome.nosnhoj/src/main/java/com/handsome/nosnhoj/impl/Comms/SendProgram/CommsProgramView.java

@@ -43,7 +43,7 @@ public class CommsProgramContribution implements ProgramNodeContribution{
 		try {
 			GetInstallationContribution().GetXmlRpc().SendMessage(GetUserInput());
 		} catch (Exception e) {
-			System.out.println(">>>>> Faield to send message");
+			System.out.println(">>>>> Failed to send message");
 		}
 	}
 	

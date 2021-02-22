@@ -1,4 +1,4 @@
-package com.handsome.nosnhoj.impl.Paint.PaintToolbar;
+package com.handsome.nosnhoj.impl.Comms.CommsToolBar;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -8,8 +8,8 @@ import com.ur.urcap.api.contribution.toolbar.ToolbarContext;
 import com.ur.urcap.api.contribution.toolbar.swing.SwingToolbarContribution;
 import com.ur.urcap.api.contribution.toolbar.swing.SwingToolbarService;
 
-public class PaintToolbarService implements SwingToolbarService{
-	
+public class CommsToolbarService implements SwingToolbarService {
+
 	@Override
 	public Icon getIcon() {
 		return new ImageIcon(getClass().getResource("/icons/acme_logo.png"));
@@ -17,12 +17,12 @@ public class PaintToolbarService implements SwingToolbarService{
 
 	@Override
 	public void configureContribution(ToolbarConfiguration configuration) {
-		configuration.setToolbarHeight(300);
+		configuration.setToolbarHeight(450);
 	}
 
 	@Override
 	public SwingToolbarContribution createToolbar(ToolbarContext context) {
-		return new PaintToolbarContribution(context);
+		return new CommsToolbarContribution(context);
 	}
 
 }

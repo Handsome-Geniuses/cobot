@@ -3,6 +3,7 @@ package com.handsome.nosnhoj.impl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+import com.handsome.nosnhoj.impl.Comms.CommsToolBar.CommsToolbarService;
 import com.handsome.nosnhoj.impl.Comms.Daemon.CommsDaemonService;
 import com.handsome.nosnhoj.impl.Comms.DaemonInstallation.CommsInstallationService;
 import com.handsome.nosnhoj.impl.Comms.PortSetupProgram.PortSetupProgramService;
@@ -35,11 +36,11 @@ public class Activator implements BundleActivator {
 		// context.registerService(SwingInstallationNodeService.class, new LockLEDInstallationService(), null);
 		// context.registerService(SwingProgramNodeService.class, new LockLEDProgramService(), null);
         
-        
+        context.registerService(SwingToolbarService.class, new CommsToolbarService(), null);
         context.registerService(SwingToolbarService.class, new PaintToolbarService(), null);
         
-		context.registerService(SwingProgramNodeService.class, new PortSetupProgramService(), null);
-		context.registerService(SwingProgramNodeService.class, new PortReadProgramService(), null);
+//		context.registerService(SwingProgramNodeService.class, new PortSetupProgramService(), null);
+//		context.registerService(SwingProgramNodeService.class, new PortReadProgramService(), null);
 		context.registerService(SwingProgramNodeService.class, new CommsProgramService(), null);
         
 		context.registerService(DaemonService.class, daemonService, null);
