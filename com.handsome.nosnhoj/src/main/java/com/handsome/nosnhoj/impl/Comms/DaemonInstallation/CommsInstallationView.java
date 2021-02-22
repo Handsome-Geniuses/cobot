@@ -45,8 +45,7 @@ public class CommsInstallationView implements SwingInstallationNodeView<CommsIns
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-		box.add(new JLabel("Message: "));
-		box.add(CreateSpace(10, 0));
+		
 
 		popupInputField = new JTextField();
 		popupInputField.setFocusable(false);
@@ -59,7 +58,9 @@ public class CommsInstallationView implements SwingInstallationNodeView<CommsIns
 				keyboardInput.show(popupInputField, contribution.GetCallbackForTextField());
 			}
 		});
-		box.add(popupInputField);
+//		box.add(new JLabel("Message: "));
+//		box.add(CreateSpace(10, 0));
+//		box.add(popupInputField);
 
 		return box;
 	}
@@ -104,7 +105,7 @@ public class CommsInstallationView implements SwingInstallationNodeView<CommsIns
 			}
 		});
 		
-		box.add(sendButton);
+//		box.add(sendButton);
 		return box;
 	}
 	

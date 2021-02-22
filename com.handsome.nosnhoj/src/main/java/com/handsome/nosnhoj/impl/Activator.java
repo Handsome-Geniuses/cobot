@@ -10,9 +10,11 @@ import com.handsome.nosnhoj.impl.Comms.ReadProgram.PortReadProgramService;
 import com.handsome.nosnhoj.impl.Comms.SendProgram.CommsProgramService;
 import com.handsome.nosnhoj.impl.LockLED.InstallationNode.LockLEDInstallationService;
 import com.handsome.nosnhoj.impl.LockLED.ProgramNode.LockLEDProgramService;
+import com.handsome.nosnhoj.impl.Paint.PaintToolbar.PaintToolbarService;
 import com.ur.urcap.api.contribution.DaemonService;
 import com.ur.urcap.api.contribution.installation.swing.SwingInstallationNodeService;
 import com.ur.urcap.api.contribution.program.swing.SwingProgramNodeService;
+import com.ur.urcap.api.contribution.toolbar.swing.SwingToolbarService;
 
 
 public class Activator implements BundleActivator {
@@ -23,21 +25,24 @@ public class Activator implements BundleActivator {
 		//daemon stuff
 		CommsDaemonService daemonService = new CommsDaemonService();
 		CommsInstallationService installationNodeService = new CommsInstallationService(daemonService);
+        context.registerService(SwingInstallationNodeService.class, installationNodeService, null);
+
 
 		//host led node
 //		context.registerService(SwingProgramNodeService.class, new LedProgramNodeService(), null);
 		//guest led node
 		//installation before program just in case
-		context.registerService(SwingInstallationNodeService.class, new LockLEDInstallationService(), null);
-		context.registerService(SwingProgramNodeService.class, new LockLEDProgramService(), null);
-		
-		context.registerService(SwingProgramNodeService.class, new PortReadProgramService(), null);
-		
-		context.registerService(SwingInstallationNodeService.class, installationNodeService, null);
+		// context.registerService(SwingInstallationNodeService.class, new LockLEDInstallationService(), null);
+		// context.registerService(SwingProgramNodeService.class, new LockLEDProgramService(), null);
+        
+        
+        context.registerService(SwingToolbarService.class, new PaintToolbarService(), null);
+        
 		context.registerService(SwingProgramNodeService.class, new PortSetupProgramService(), null);
+		context.registerService(SwingProgramNodeService.class, new PortReadProgramService(), null);
 		context.registerService(SwingProgramNodeService.class, new CommsProgramService(), null);
+        
 		context.registerService(DaemonService.class, daemonService, null);
-		
 	}
 
 	@Override
