@@ -70,7 +70,11 @@ def msg_dump():
 
 #checks if a port is open
 def port_check():
-    return ser.is_open
+    if(ser.is_open):
+        return "opened"
+    else:
+        return "closed"
+
 
 #opens port given port
 def port_open(port='/dev/ttyUSB0', baud=9600):
@@ -84,7 +88,7 @@ def port_open(port='/dev/ttyUSB0', baud=9600):
     try:
         ser.open()
         time.sleep(1)
-        return str(port)+" is opened"
+        return str(port)+" is opened!"
     except:
         sys.stdout.write(">>>>> ERROR: Could not open port")
         return "Could not open port."
@@ -122,16 +126,18 @@ def Thread_Reader():
 thread_start = threading.Thread(target=Thread_Reader)
 thread_start.start()
 
-# print(port_open())
+# ##print(port_open())
 # try:
 #     msg_dump()
 #     while(True):
-#         msg = get_message()
-#         if(msg is not "~"):
-#             if(msg == "hi"):
-#                 print("whatsup")
-#             else:
-#                 print(msg)
+#         time.sleep(5)
+#         print("connected" if port_check()=="t" else s"nope")
+#         # msg = get_message()
+#         # if(msg is not "~"):
+#         #     if(msg == "hi"):
+#         #         print("whatsup")
+#         #     else:
+#         #         print(msg)
 # finally:
 #     stopper.set()
 
@@ -152,7 +158,9 @@ server.register_function(send_message, "send_message")
 server.register_function(get_message, "get_message")
 server.register_function(msg_dump, "msg_dump")
 server.register_function(get_ports, "get_ports")
+server.register_function(port_check, "port_check")
 server.register_function(port_open, "port_open")
 server.register_function(port_close, "port_close")
-server.register_function(port_check, "port_check")
 server.serve_forever()
+
+

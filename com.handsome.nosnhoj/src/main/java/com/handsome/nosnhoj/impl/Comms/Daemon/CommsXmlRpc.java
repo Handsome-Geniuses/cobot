@@ -26,6 +26,12 @@ public class CommsXmlRpc {
 		client = new XmlRpcClient();
 		client.setConfig(config);
 	}
+	
+	public boolean IsPortConnected() throws XmlRpcException, Exception{
+		Object result = client.execute("port_check", new ArrayList<String>());
+		String msg = processString(result);
+		return msg.contains("open");
+	}
 
 	public String PortOpen() throws XmlRpcException, Exception{
 		Object result = client.execute("port_open", new ArrayList<String>());
@@ -57,11 +63,6 @@ public class CommsXmlRpc {
 		Object result = client.execute("send_message", args);
 		return processString(result);
 	}
-	
-	public Boolean IsPortConnected() throws XmlRpcException, Exception {
-		Object result = client.execute("port_check", new ArrayList<String>());
-		return processBoolean(result);
-	}
 
 	private String processString(Object response) throws Exception {
 		if (response instanceof String) {
@@ -72,12 +73,5 @@ public class CommsXmlRpc {
 		}
 	}
 	
-	private Boolean processBoolean(Object response) throws Exception{
-		if (response instanceof Boolean) {
-			return (Boolean) response;
-		}
-		else {
-			throw new Exception();
-		}
-	}
 }
+

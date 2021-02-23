@@ -82,9 +82,14 @@ public class CommsProgramContribution implements ProgramNodeContribution{
 
 	@Override
 	public boolean isDefined() {
-		return GetInstallationContribution().isDefined();
-//		return apiProvider.getProgramAPI().getInstallationNode(CommsInstallationContribution.class).isDefined();
-//		return true;
+		boolean connected = false;
+		try {
+			connected = GetInstallationContribution().GetXmlRpc().IsPortConnected();
+		} 
+		catch (Exception e) {
+			System.out.println("!!!attempted send node define failed");
+		}
+		return GetInstallationContribution().isDefined() && connected;
 	}
 
 	@Override

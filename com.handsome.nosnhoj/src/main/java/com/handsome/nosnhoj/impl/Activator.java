@@ -24,6 +24,7 @@ public class Activator implements BundleActivator {
 		System.out.println(">>>>>Nosnhoj says whatsgud.");
 		
 		//daemon stuff
+		
 		CommsDaemonService daemonService = new CommsDaemonService();
 		CommsInstallationService installationNodeService = new CommsInstallationService(daemonService);
         context.registerService(SwingInstallationNodeService.class, installationNodeService, null);
