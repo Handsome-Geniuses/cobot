@@ -56,7 +56,7 @@ def read_message():
         except:
             return "could not read for whatever reason"
     else:
-        return "Port not opened doiiiii"
+        return "~Port not opened doiiiii"
 
 def msg_dump():
     if(ser.is_open):

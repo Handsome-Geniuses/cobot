@@ -14,15 +14,15 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
 
+import org.apache.xmlrpc.XmlRpcException;
+
+import com.handsome.nosnhoj.impl.Comms.Daemon.CommsXmlRpc;
 import com.handsome.nosnhoj.impl.Comms.DaemonInstallation.CommsInstallationContribution;
-import com.ur.urcap.api.contribution.ViewAPIProvider;
 import com.ur.urcap.api.contribution.toolbar.ToolbarContext;
 import com.ur.urcap.api.contribution.toolbar.swing.SwingToolbarContribution;
 import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardInputCallback;
@@ -38,6 +38,7 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 	private static final int inc = 5;
 	private static final int max_ang = 120;
 	private final ToolbarContext context;
+	private final CommsXmlRpc xml;
 
     private JButton btn_up;
     private JButton btn_down;
@@ -51,6 +52,7 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 	public PaintToolbarContribution(ToolbarContext context) {
 		this.context = context;
 		numInput = context.getAPIProvider().getUserInterfaceAPI().getUserInteraction().getKeyboardInputFactory();
+		xml = context.getAPIProvider().getApplicationAPI().getInstallationNode(CommsInstallationContribution.class).GetXmlRpc();
 	}
 	
 	@Override
@@ -71,20 +73,37 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 		label.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		btn_home = new JButton("Reference Home");
+		btn_home.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btn_home.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				//send message to paintgun to reference home.
-				
-				
-				//change to main layout
-				CardLayout card = (CardLayout)(panel.getLayout());
-				card.show(panel, PAGE_MAIN);
+				String msg = "~";
+				try {
+					xml.PortDump();
+//					while(!xml.PortRead().contains("~")); //dump
+					if(xml.SendMessage("h;").contains("not")) {
+						return;
+					}
+					while(msg.contains("~")) {
+						Thread.sleep(100);
+						msg = xml.PortRead();
+					}
+					//change to main layout
+					CardLayout card = (CardLayout)(panel.getLayout());
+					card.show(panel, PAGE_MAIN);
+//					if(msg.contains("done")) {
+//						
+//					}
+				} 
+				catch (Exception e2) {
+					System.out.println("Could not send go home message.");
+				}
 			}
 		});
 		
 		
 		page_init.add(label);
+		page_init.add(btn_home);
 		return page_init;
 	}
 
@@ -194,8 +213,8 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 	public void openView() {
 		//dump all messages
 		try {
-			context.getAPIProvider().getApplicationAPI().getInstallationNode(CommsInstallationContribution.class).GetXmlRpc().PortDump();
-//			while(!context.getAPIProvider().getApplicationAPI().getInstallationNode(CommsInstallationContribution.class).GetXmlRpc().PortRead().contains("~"));
+			xml.PortDump();
+//			while(!xml.PortRead().contains("~"));
 			
 		} 
 		catch (Exception e) {
@@ -204,10 +223,10 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 		//check if gun is initialized. then decide view.
 		try {
 			CardLayout card = (CardLayout)(p.getLayout());
-			String msg = context.getAPIProvider().getApplicationAPI().getInstallationNode(CommsInstallationContribution.class).GetXmlRpc().SendMessage("d;");
+			String msg = xml.SendMessage("d;");
 			System.out.println("dump: " + msg);
-			Thread.sleep(100);
-			msg = context.getAPIProvider().getApplicationAPI().getInstallationNode(CommsInstallationContribution.class).GetXmlRpc().PortRead();
+			Thread.sleep(100);	//allow to buffer up
+			msg = xml.PortRead();
 			System.out.println("read: " + msg);
 			if(msg.contains("true")) {
 				System.out.println("yes");

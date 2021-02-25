@@ -69,9 +69,17 @@ public class CommsXmlRpc {
 		return processString(result);
 	}
 	
-	public String PortDump() throws XmlRpcException, Exception{
-		Object result = client.execute("msg_dump", new ArrayList<String>());
-		return processString(result);
+//	public String PortDump() throws XmlRpcException, Exception{
+//		Object result = client.execute("msg_dump", new ArrayList<String>());
+//		return processString(result);
+//	}
+	
+	public void PortDump() throws XmlRpcException, Exception{
+		System.out.println("looping till port is cleared.");
+		Object result = client.execute("get_message", new ArrayList<String>());
+		while(!processString(result).contains("~")) {
+			result = client.execute("get_message", new ArrayList<String>());
+		}
 	}
 
 	private String processString(Object response) throws Exception {
