@@ -113,6 +113,7 @@ def Thread_Reader():
     global read_string_buffer
     #wait till port has been opened
     while(ser.is_open == False):
+        #may need to reset read_string_buffer to ~
         time.sleep(0.1)
     #main thread here
     while(not stopper.is_set()):
@@ -126,18 +127,20 @@ def Thread_Reader():
 thread_start = threading.Thread(target=Thread_Reader)
 thread_start.start()
 
-print(port_open())
-try:
-    msg_dump()
-    while(True):
-        msg = get_message()
-        if(msg is not "~"):
-            if(msg == "hi"):
-                print("whatsup")
-            else:
-                print(msg)
-finally:
-    stopper.set()
+# ##print(port_open())
+# try:
+#     msg_dump()
+#     while(True):
+#         time.sleep(5)
+#         print("connected" if port_check()=="t" else s"nope")
+#         # msg = get_message()
+#         # if(msg is not "~"):
+#         #     if(msg == "hi"):
+#         #         print("whatsup")
+#         #     else:
+#         #         print(msg)
+# finally:
+#     stopper.set()
 
 
 from SimpleXMLRPCServer import SimpleXMLRPCServer

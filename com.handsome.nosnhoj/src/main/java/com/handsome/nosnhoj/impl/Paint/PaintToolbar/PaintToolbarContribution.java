@@ -80,7 +80,6 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 				String msg = "~";
 				try {
 					xml.PortDump();
-//					while(!xml.PortRead().contains("~")); //dump
 					if(xml.SendMessage("h;").contains("not")) {
 						return;
 					}
@@ -88,12 +87,11 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 						Thread.sleep(100);
 						msg = xml.PortRead();
 					}
+					degs.setText(Integer.toString(0));
 					//change to main layout
 					CardLayout card = (CardLayout)(panel.getLayout());
 					card.show(panel, PAGE_MAIN);
-//					if(msg.contains("done")) {
-//						
-//					}
+
 				} 
 				catch (Exception e2) {
 					System.out.println("Could not send go home message.");
@@ -131,21 +129,27 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 	}
 
 	//pops up the numpad ui
-	private KeyboardNumberInput<Double> GetKeyInput(){
-		KeyboardNumberInput<Double> in = numInput.createDoubleKeypadInput();
-		in.setInitialValue((double) 0);
+	private KeyboardNumberInput<Integer> GetKeyInput(){
+		KeyboardNumberInput<Integer> in = numInput.createIntegerKeypadInput();
+		in.setInitialValue((int) 0);
 		return in;
 	}
 	
 	//handles numpad input
-	private KeyboardInputCallback<Double> GetInputCallback(){
-		return new KeyboardInputCallback<Double>() {
+	private KeyboardInputCallback<Integer> GetInputCallback(){
+		return new KeyboardInputCallback<Integer>() {
 
 			@Override
-			public void onOk(Double value) {
-				if (value >= 135) value = (double) 135;
-				else if (value <= -135) value = (double) -135;
-				degs.setText(Double.toString(value));
+			public void onOk(Integer value) {
+				if (value >= 135) value = 135;
+				else if (value <= -135) value =  -135;
+				degs.setText(Integer.toString(value));
+				try {
+					xml.SendMessage("p"+Integer.toString(value)+";");
+				} catch (Exception e) {
+					System.out.println("Failed to send on keyboard.");
+				}
+				
 			}
 		};
 	}
@@ -161,9 +165,14 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
         btn_up.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				Double curr = Double.parseDouble(degs.getText())+inc;
-				if (curr>=max_ang) curr = (double) max_ang;
-				degs.setText(Double.toString(curr));
+				Integer curr = Integer.parseInt(degs.getText()) + inc;
+				if (curr>=max_ang) curr = (Integer) max_ang;
+				degs.setText(Integer.toString(curr));
+				try {
+					xml.SendMessage("p"+Integer.toString(curr)+";");
+				} catch (Exception e) {
+					System.out.println("Failed to send on +.");
+				}
 			}
 		});
 
@@ -175,9 +184,14 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
         btn_down.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				Double curr = Double.parseDouble(degs.getText())-inc;
-				if (curr<=-max_ang) curr = (double)-max_ang;
-				degs.setText(Double.toString(curr));
+				Integer curr = Integer.parseInt(degs.getText()) - inc;
+				if (curr>=max_ang) curr = (Integer) max_ang;
+				degs.setText(Integer.toString(curr));
+				try {
+					xml.SendMessage("p"+Integer.toString(curr)+";");
+				} catch (Exception e) {
+					System.out.println("Failed to send on -.");
+				}
 			}
 		});
 
@@ -191,7 +205,7 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
         degs.addMouseListener(new MouseAdapter() {
         	@Override
 			public void mousePressed(MouseEvent e) {
-        		KeyboardNumberInput<Double> in = GetKeyInput();
+        		KeyboardNumberInput<Integer> in = GetKeyInput();
         		in.show(degs, GetInputCallback());
         	}
 		});
@@ -214,8 +228,6 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 		//dump all messages
 		try {
 			xml.PortDump();
-//			while(!xml.PortRead().contains("~"));
-			
 		} 
 		catch (Exception e) {
 			System.out.println(">>>>> Could not dump!");
@@ -230,6 +242,10 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 			System.out.println("read: " + msg);
 			if(msg.contains("true")) {
 				System.out.println("yes");
+				xml.PortDump();
+				xml.SendMessage("g;");
+				Thread.sleep(100);
+				degs.setText(xml.PortRead());
 				card.show(p, PAGE_MAIN);
 			}
 			else {
