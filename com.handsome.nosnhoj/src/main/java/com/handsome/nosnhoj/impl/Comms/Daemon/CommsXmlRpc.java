@@ -63,6 +63,16 @@ public class CommsXmlRpc {
 		Object result = client.execute("send_message", args);
 		return processString(result);
 	}
+	
+	public String PortRead() throws XmlRpcException, Exception {
+		Object result = client.execute("get_message", new ArrayList<String>());
+		return processString(result);
+	}
+	
+	public String PortDump() throws XmlRpcException, Exception{
+		Object result = client.execute("msg_dump", new ArrayList<String>());
+		return processString(result);
+	}
 
 	private String processString(Object response) throws Exception {
 		if (response instanceof String) {

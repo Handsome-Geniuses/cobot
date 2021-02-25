@@ -1,5 +1,6 @@
 package com.handsome.nosnhoj.impl.Paint.PaintToolbar;
 
+import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -13,24 +14,39 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
+
+import com.handsome.nosnhoj.impl.Comms.DaemonInstallation.CommsInstallationContribution;
+import com.ur.urcap.api.contribution.ViewAPIProvider;
 import com.ur.urcap.api.contribution.toolbar.ToolbarContext;
 import com.ur.urcap.api.contribution.toolbar.swing.SwingToolbarContribution;
 import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardInputCallback;
 import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardInputFactory;
 import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardNumberInput;
 
-public class PaintToolbarContribution implements SwingToolbarContribution{
 
+
+public class PaintToolbarContribution implements SwingToolbarContribution{
+	final static String PAGE_INIT = "INIT";
+	final static String PAGE_MAIN = "MAIN";
+	
+	private static final int inc = 5;
+	private static final int max_ang = 120;
 	private final ToolbarContext context;
 
     private JButton btn_up;
     private JButton btn_down;
     private JTextField degs;
     private KeyboardInputFactory numInput;
+    
+    private JButton btn_home;
+    
+    private JPanel p;
 	
 	public PaintToolbarContribution(ToolbarContext context) {
 		this.context = context;
@@ -38,12 +54,49 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 	}
 	
 	@Override
-	public void buildUI(JPanel panel) {
-		// TODO Auto-generated method stub
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); 
-		panel.add(CreateTitle("Paint Control"));
-		panel.add(CreateSpace(0, 10));
-		panel.add(CreateDegreeControl());
+	public void buildUI(JPanel panel) {		
+		p = panel;
+		p.setLayout(new CardLayout());
+		
+		p.add(CreateInitPage(p), PAGE_INIT);
+		p.add(CreateMainPage(), PAGE_MAIN);
+		
+	}
+	
+	private JPanel CreateInitPage(final JPanel panel) {
+		JPanel page_init = new JPanel();
+		page_init.setLayout(new BoxLayout(page_init, BoxLayout.Y_AXIS)); 
+		page_init.setAlignmentX(Component.CENTER_ALIGNMENT);
+		JLabel label = new JLabel("Paint gun not initialized");
+		label.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		btn_home = new JButton("Reference Home");
+		btn_home.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				//send message to paintgun to reference home.
+				
+				
+				//change to main layout
+				CardLayout card = (CardLayout)(panel.getLayout());
+				card.show(panel, PAGE_MAIN);
+			}
+		});
+		
+		
+		page_init.add(label);
+		return page_init;
+	}
+
+	private JPanel CreateMainPage() {
+		JPanel page_main = new JPanel();
+		page_main.setLayout(new BoxLayout(page_main, BoxLayout.Y_AXIS)); 
+		page_main.setAlignmentX(Component.CENTER_ALIGNMENT);
+		page_main.add(CreateTitle("Paint Control"));
+		page_main.add(CreateSpace(0, 10));
+		page_main.add(CreateDegreeControl());
+		
+		return page_main;
 	}
 	
 	private Box CreateTitle(String s) {
@@ -89,8 +142,8 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
         btn_up.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				Double curr = Double.parseDouble(degs.getText())+5;
-				if (curr>=135) curr = (double) 135;
+				Double curr = Double.parseDouble(degs.getText())+inc;
+				if (curr>=max_ang) curr = (double) max_ang;
 				degs.setText(Double.toString(curr));
 			}
 		});
@@ -103,8 +156,8 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
         btn_down.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				Double curr = Double.parseDouble(degs.getText())-5;
-				if (curr<=-135) curr = (double) -135;
+				Double curr = Double.parseDouble(degs.getText())-inc;
+				if (curr<=-max_ang) curr = (double)-max_ang;
 				degs.setText(Double.toString(curr));
 			}
 		});
@@ -139,13 +192,40 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 
 	@Override
 	public void openView() {
-		// TODO Auto-generated method stub
+		//dump all messages
+		try {
+			context.getAPIProvider().getApplicationAPI().getInstallationNode(CommsInstallationContribution.class).GetXmlRpc().PortDump();
+//			while(!context.getAPIProvider().getApplicationAPI().getInstallationNode(CommsInstallationContribution.class).GetXmlRpc().PortRead().contains("~"));
+			
+		} 
+		catch (Exception e) {
+			System.out.println(">>>>> Could not dump!");
+		}
+		//check if gun is initialized. then decide view.
+		try {
+			CardLayout card = (CardLayout)(p.getLayout());
+			String msg = context.getAPIProvider().getApplicationAPI().getInstallationNode(CommsInstallationContribution.class).GetXmlRpc().SendMessage("d;");
+			System.out.println("dump: " + msg);
+			Thread.sleep(100);
+			msg = context.getAPIProvider().getApplicationAPI().getInstallationNode(CommsInstallationContribution.class).GetXmlRpc().PortRead();
+			System.out.println("read: " + msg);
+			if(msg.contains("true")) {
+				System.out.println("yes");
+				card.show(p, PAGE_MAIN);
+			}
+			else {
+				System.out.println("no");
+				card.show(p, PAGE_INIT);
+			}
+		} 
+		catch (Exception e) {
+			System.out.println(">>>>> failed to check if init");
+		}
 		
 	}
 
 	@Override
 	public void closeView() {
-		// TODO Auto-generated method stub
 	}
-
+	
 }
