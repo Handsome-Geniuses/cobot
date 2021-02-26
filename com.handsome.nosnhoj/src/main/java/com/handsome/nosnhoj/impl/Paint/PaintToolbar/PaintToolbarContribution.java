@@ -16,10 +16,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-
-import org.apache.xmlrpc.XmlRpcException;
 
 import com.handsome.nosnhoj.impl.Comms.Daemon.CommsXmlRpc;
 import com.handsome.nosnhoj.impl.Comms.DaemonInstallation.CommsInstallationContribution;
@@ -44,6 +43,7 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
     private JButton btn_down;
     private JTextField degs;
     private KeyboardInputFactory numInput;
+    private JSlider speed;
     
     private JButton btn_home;
     
@@ -79,12 +79,12 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 			public void mousePressed(MouseEvent e) {
 				String msg = "~";
 				try {
-					xml.PortDump();
+					System.out.println(xml.PortDump());
 					if(xml.SendMessage("h;").contains("not")) {
 						return;
 					}
 					while(msg.contains("~")) {
-						Thread.sleep(100);
+//						Thread.sleep(100);
 						msg = xml.PortRead();
 					}
 					degs.setText(Integer.toString(0));
@@ -145,7 +145,10 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 				else if (value <= -135) value =  -135;
 				degs.setText(Integer.toString(value));
 				try {
+					System.out.println(xml.PortDump());
 					xml.SendMessage("p"+Integer.toString(value)+";");
+//					while(xml.PortRead().contains("~"));
+//					while(!xml.PortRead().contains("!"));
 				} catch (Exception e) {
 					System.out.println("Failed to send on keyboard.");
 				}
@@ -170,6 +173,8 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 				degs.setText(Integer.toString(curr));
 				try {
 					xml.SendMessage("p"+Integer.toString(curr)+";");
+//					while(xml.PortRead().contains("~"));
+//					while(!xml.PortRead().contains("!"));
 				} catch (Exception e) {
 					System.out.println("Failed to send on +.");
 				}
@@ -189,6 +194,8 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 				degs.setText(Integer.toString(curr));
 				try {
 					xml.SendMessage("p"+Integer.toString(curr)+";");
+//					while(xml.PortRead().contains("~"));
+//					while(!xml.PortRead().contains("!"));
 				} catch (Exception e) {
 					System.out.println("Failed to send on -.");
 				}
@@ -218,6 +225,16 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
         
         return box;
     }
+    
+    private Box CreateSpeedSlider() {
+    	Box box = Box.createHorizontalBox();
+		box.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		speed = new JSlider(JSlider.HORIZONTAL, 10, 100, 100);	//10-100%, default 100
+		speed.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		return box;	
+    }
 	
 	private Component CreateSpace(int w, int h) {
 		return Box.createRigidArea(new Dimension(w, h));
@@ -225,31 +242,35 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 
 	@Override
 	public void openView() {
-		//dump all messages
-		try {
-			xml.PortDump();
-		} 
-		catch (Exception e) {
-			System.out.println(">>>>> Could not dump!");
-		}
 		//check if gun is initialized. then decide view.
 		try {
 			CardLayout card = (CardLayout)(p.getLayout());
+			System.out.println(xml.PortDump());	//dump messages before send
 			String msg = xml.SendMessage("d;");
-			System.out.println("dump: " + msg);
-			Thread.sleep(100);	//allow to buffer up
-			msg = xml.PortRead();
+			System.out.println(msg);
+			Thread.sleep(100);	//allow to buffer up //or while loop ~. think its fast enuf
+			msg = xml.PortRead();	//now read
+//			while(!(msg.contains("true") || msg.contains("false")))
+//			nms
+//			while(msg.contains("~")) {
+////				Thread.sleep(100);
+//				msg = xml.PortRead();	//now read
+//			}
 			System.out.println("read: " + msg);
+			
 			if(msg.contains("true")) {
-				System.out.println("yes");
-				xml.PortDump();
-				xml.SendMessage("g;");
+				System.out.println(xml.PortDump());
+				System.out.println(xml.SendMessage("g;"));
 				Thread.sleep(100);
-				degs.setText(xml.PortRead());
+				String d = xml.PortRead().replaceAll("\\s","");
+//				while(d.contains("~")) {
+//					d = xml.PortRead().replaceAll("\\s","");
+//				}
+				System.out.println("degs: "+d);
+				degs.setText(d);
 				card.show(p, PAGE_MAIN);
 			}
 			else {
-				System.out.println("no");
 				card.show(p, PAGE_INIT);
 			}
 		} 

@@ -210,6 +210,7 @@ public class CommsToolbarContribution implements SwingToolbarContribution {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
+					//context.getAPIProvider().getApplicationAPI().getInstallationNode(CommsInstallationContribution.class).GetXmlRpc().PortDump();
 					context.getAPIProvider().getApplicationAPI().getInstallationNode(CommsInstallationContribution.class).GetXmlRpc().SendMessage(UserInput.getText());
 				} 
 				catch (Exception e) {

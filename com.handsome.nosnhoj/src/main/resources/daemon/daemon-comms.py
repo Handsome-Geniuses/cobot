@@ -61,8 +61,10 @@ def read_message():
 def msg_dump():
     if(ser.is_open):
         try:
+            ser.flush()
             ser.reset_input_buffer()
-            return "input buffer cleared"
+            ser.reset_output_buffer()
+            return "reset input, output, flush"
         except:
             return "Could not dump"
     else:
