@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -64,9 +66,9 @@ public class PaintProgramView implements SwingProgramNodeView<PaintProgramContri
 		
 		panel.add(CreateDegreeControl(provider));
 		panel.add(CreateSpace(0, 25));
-		panel.add(CreateSpeedSlider());
+		panel.add(CreateSpeedSlider(provider));
 		panel.add(CreateSpace(0, 25));
-		panel.add(CreateCheckBox("complete before next action"));
+		panel.add(CreateCheckBox("complete before next action", provider));
 		
 	}
 	
@@ -76,15 +78,21 @@ public class PaintProgramView implements SwingProgramNodeView<PaintProgramContri
 	public String GetDegrees() {
 		return degs.getText();
 	}
-	public void SetDegrees(String d) {
-		degs.setText(d);
+	public void SetDegrees(Integer d) {
+		degs.setText(Integer.toString(d));
 	}
 	public Integer GetSpeed() {
 		return speed_slider.getValue();
 	}
-	public void SetSpeed(String percent) {
-		speed_slider.setValue(Integer.parseInt(percent));
-		speed_label.setText(percent+"%");
+	public void SetSpeed(Integer percent) {
+		speed_slider.setValue(percent);
+		speed_label.setText(Integer.toString(percent)+"%");
+	}
+	public Boolean GetCheck() {
+		return halt.isSelected();
+	}
+	public void SetCheck(Boolean b) {
+		halt.setSelected(b);
 	}
 	
 	/*========================================================================================
@@ -102,10 +110,20 @@ public class PaintProgramView implements SwingProgramNodeView<PaintProgramContri
 		return box;
 	}
 	
-	private Box CreateCheckBox(String s) {
+	private Box CreateCheckBox(String s, final ContributionProvider<PaintProgramContribution> provider) {
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.CENTER_ALIGNMENT);
 		halt = new JCheckBox(s, false);
+		halt.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		halt.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				provider.get().OnCheckChange(halt.isSelected());
+			}
+		});
+		
+		
 		box.add(halt);
 		return box;
 	}
@@ -125,7 +143,7 @@ public class PaintProgramView implements SwingProgramNodeView<PaintProgramContri
 				Integer curr = Integer.parseInt(degs.getText()) + paintconfig.inc_btn;
 				if(curr>=paintconfig.max_ang) curr = (Integer) paintconfig.max_ang;
 				degs.setText(Integer.toString(curr));
-				//TODO update to datamodel
+				provider.get().OnDegreeChange(curr);
 			}
 		});
 
@@ -140,7 +158,7 @@ public class PaintProgramView implements SwingProgramNodeView<PaintProgramContri
 				Integer curr = Integer.parseInt(degs.getText()) - paintconfig.inc_btn;
 				if(curr>=paintconfig.max_ang) curr = (Integer) paintconfig.max_ang;
 				degs.setText(Integer.toString(curr));
-				//TODO update to datamodel
+				provider.get().OnDegreeChange(curr);
 			}
 		});
 
@@ -168,7 +186,7 @@ public class PaintProgramView implements SwingProgramNodeView<PaintProgramContri
         return box;
     }
 	
-    private Box CreateSpeedSlider() {
+    private Box CreateSpeedSlider(final ContributionProvider<PaintProgramContribution> provider) {
     	Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
@@ -186,6 +204,8 @@ public class PaintProgramView implements SwingProgramNodeView<PaintProgramContri
 			public void stateChanged(ChangeEvent arg0) {
 				int v = speed_slider.getValue(); //should be from 10 to 100
 				speed_label.setText(Integer.toString(v)+"%");
+				provider.get().OnSpeedChange(v);
+				
 			}
 		});
 		

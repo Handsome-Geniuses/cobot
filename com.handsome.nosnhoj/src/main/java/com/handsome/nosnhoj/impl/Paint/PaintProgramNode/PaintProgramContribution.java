@@ -7,6 +7,7 @@ import com.ur.urcap.api.contribution.program.ProgramAPIProvider;
 import com.ur.urcap.api.domain.data.DataModel;
 import com.ur.urcap.api.domain.script.ScriptWriter;
 import com.ur.urcap.api.domain.undoredo.UndoRedoManager;
+import com.ur.urcap.api.domain.undoredo.UndoableChanges;
 import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardInputCallback;
 import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardInputFactory;
 import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardNumberInput;
@@ -23,10 +24,13 @@ public class PaintProgramContribution implements ProgramNodeContribution{
 	private final String xml_var;
 	
 	private static final String KEY_INPUT_DEG = "input_deg";
-	private static final String DEF_INPUT_DEG = "0";
+	private static final Integer DEF_INPUT_DEG = 0;
 	
 	private static final String KEY_SPEED = "key_speed";
-	private static final String DEF_SPEED = "100";
+	private static final Integer DEF_SPEED = 100;
+	
+	private static final String KEY_COMPLETE = "key_complete";
+	private static final Boolean DEF_COMPLETE = true;
 	
 	/*========================================================================================
      * Constructor
@@ -44,22 +48,28 @@ public class PaintProgramContribution implements ProgramNodeContribution{
 	/*========================================================================================
      * Get and sets
      * ======================================================================================*/
-	private void SetAngle(String in) {
+	private void SetAngle(Integer in) {
 		model.set(KEY_INPUT_DEG, in);
 	}
-	private String GetAngle() {
+	private Integer GetAngle() {
 		return model.get(KEY_INPUT_DEG, DEF_INPUT_DEG);
 	}
 	
-	private void SetMotorSpeed(String in) {
+	private void SetMotorSpeed(Integer in) {
 		model.set(KEY_SPEED, in);
 	}
-	private String GetMotorSpeed() {
+	private Integer GetMotorSpeed() {
 		return model.get(KEY_SPEED, DEF_SPEED);
+	}
+	private void SetCheckBox(Boolean b) {
+		model.set(KEY_COMPLETE, b);
+	}
+	private Boolean GetCheckBox() {
+		return model.get(KEY_COMPLETE, DEF_COMPLETE);
 	}
 	
 	/*========================================================================================
-     * Keyinput Listener
+     * Degree numpad listener
      * ======================================================================================*/
 	public KeyboardNumberInput<Integer> GetKeyInput(){
 		KeyboardNumberInput<Integer> in = numInput.createIntegerKeypadInput();
@@ -73,16 +83,48 @@ public class PaintProgramContribution implements ProgramNodeContribution{
 			public void onOk(Integer value) {
 				if (value>=paintconfig.max_ang) value = paintconfig.max_ang;
 				else if (value<=-paintconfig.max_ang) value = -paintconfig.max_ang;
-				SetAngle(Integer.toString(value));
-				view.SetDegrees(Integer.toString(value));
+				SetAngle(value);
+				view.SetDegrees(value);
 			}
 		};
 	}
 	
 	/*========================================================================================
-     * Other Listener events
+     * Degree +- button listener
+     * ======================================================================================*/
+	public void OnDegreeChange(final Integer degree) {
+		undoRedoManager.recordChanges(new UndoableChanges() {
+			@Override
+			public void executeChanges() {
+				SetAngle(degree);
+			}
+		});
+	}
+	
+	/*========================================================================================
+     * Speed slider listener
      * ======================================================================================*/
 	//TODO if want to add test command button.
+	public void OnSpeedChange(final Integer speed) {
+		undoRedoManager.recordChanges(new UndoableChanges() {
+			@Override
+			public void executeChanges() {
+				SetMotorSpeed(speed);
+			}
+		});
+	}
+	
+	/*========================================================================================
+     * Checkbox listerner
+     * ======================================================================================*/
+	public void OnCheckChange(final Boolean b) {
+		undoRedoManager.recordChanges(new UndoableChanges() {
+			@Override
+			public void executeChanges() {
+				SetCheckBox(b);
+			}
+		});
+	}
 	
 	
 	/*========================================================================================
@@ -90,7 +132,9 @@ public class PaintProgramContribution implements ProgramNodeContribution{
      * ======================================================================================*/
 	@Override
 	public void openView() {
-		// TODO Auto-generated method stub
+		view.SetDegrees(GetAngle());
+		view.SetSpeed(GetMotorSpeed());
+		view.SetCheck(GetCheckBox());
 	}
 
 	@Override
@@ -105,8 +149,8 @@ public class PaintProgramContribution implements ProgramNodeContribution{
 
 	@Override
 	public boolean isDefined() {
-		// TODO Auto-generated method stub
-		return false;
+		// TODO set define 
+		return true;
 	}
 	
 	@Override
