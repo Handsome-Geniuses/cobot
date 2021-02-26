@@ -24,6 +24,7 @@ import javax.swing.event.ChangeListener;
 
 import com.handsome.nosnhoj.impl.Comms.Daemon.CommsXmlRpc;
 import com.handsome.nosnhoj.impl.Comms.DaemonInstallation.CommsInstallationContribution;
+import com.handsome.nosnhoj.impl.Paint.paintconfig;
 import com.ur.urcap.api.contribution.toolbar.ToolbarContext;
 import com.ur.urcap.api.contribution.toolbar.swing.SwingToolbarContribution;
 import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardInputCallback;
@@ -146,8 +147,8 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 
 			@Override
 			public void onOk(Integer value) {
-				if (value >= 135) value = 135;
-				else if (value <= -135) value =  -135;
+				if (value>=paintconfig.max_ang) value = paintconfig.max_ang;
+				else if (value<=-paintconfig.max_ang) value = -paintconfig.max_ang;
 				degs.setText(Integer.toString(value));
 				try {
 					System.out.println(xml.PortDump());

@@ -42,9 +42,14 @@ public class PaintProgramView implements SwingProgramNodeView<PaintProgramContri
 	private JSlider speed_slider;
 	private JLabel  speed_label;
 	
+	
+	
 //	private final CommsXmlRpc xml;	//goes to contribution i think
 //	private KeyboardInputFactory numInput;	//goes to contribution too i think
 	
+	/*========================================================================================
+     * Constructor and Build
+     * ======================================================================================*/
 	public PaintProgramView(ViewAPIProvider apiProvider) {
 		this.apiProvider = apiProvider;
 	}
@@ -57,7 +62,7 @@ public class PaintProgramView implements SwingProgramNodeView<PaintProgramContri
 		panel.add(CreateTitle("Angle"));
 		panel.add(CreateSpace(0, 10));
 		
-		panel.add(CreateDegreeControl());
+		panel.add(CreateDegreeControl(provider));
 		panel.add(CreateSpace(0, 25));
 		panel.add(CreateSpeedSlider());
 		panel.add(CreateSpace(0, 25));
@@ -65,6 +70,26 @@ public class PaintProgramView implements SwingProgramNodeView<PaintProgramContri
 		
 	}
 	
+	/*========================================================================================
+     * Get and sets
+     * ======================================================================================*/
+	public String GetDegrees() {
+		return degs.getText();
+	}
+	public void SetDegrees(String d) {
+		degs.setText(d);
+	}
+	public Integer GetSpeed() {
+		return speed_slider.getValue();
+	}
+	public void SetSpeed(String percent) {
+		speed_slider.setValue(Integer.parseInt(percent));
+		speed_label.setText(percent+"%");
+	}
+	
+	/*========================================================================================
+     * UI Components
+     * ======================================================================================*/
 	private Box CreateTitle(String s) {
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -85,7 +110,7 @@ public class PaintProgramView implements SwingProgramNodeView<PaintProgramContri
 		return box;
 	}
 	
-	private Box CreateDegreeControl(){
+	private Box CreateDegreeControl(final ContributionProvider<PaintProgramContribution> provider){
     	Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -129,9 +154,8 @@ public class PaintProgramView implements SwingProgramNodeView<PaintProgramContri
         degs.addMouseListener(new MouseAdapter() {
         	@Override
 			public void mousePressed(MouseEvent e) {
-        		//TODO setup integer keypad
-        		//getinput
-        		//inputcallback
+        		KeyboardNumberInput<Integer> in = provider.get().GetKeyInput();
+        		in.show(degs, provider.get().GetInputCallback());
         	}
 		});
 
