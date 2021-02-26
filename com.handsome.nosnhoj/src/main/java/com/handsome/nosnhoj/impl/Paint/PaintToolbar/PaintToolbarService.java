@@ -17,7 +17,7 @@ public class PaintToolbarService implements SwingToolbarService{
 
 	@Override
 	public void configureContribution(ToolbarConfiguration configuration) {
-		configuration.setToolbarHeight(300);
+		configuration.setToolbarHeight(200);
 	}
 
 	@Override

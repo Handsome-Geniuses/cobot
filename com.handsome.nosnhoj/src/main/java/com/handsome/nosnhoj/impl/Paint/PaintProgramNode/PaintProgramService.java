@@ -23,7 +23,7 @@ public class PaintProgramService implements SwingProgramNodeService<PaintProgram
 
 	@Override
 	public String getTitle(Locale locale) {
-		return "Paint Move";
+		return "Paint Rotate";
 	}
 
 	@Override

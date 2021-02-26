@@ -16,10 +16,14 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.handsome.nosnhoj.impl.Comms.Daemon.CommsXmlRpc;
+import com.handsome.nosnhoj.impl.Paint.paintconfig;
 import com.ur.urcap.api.contribution.ContributionProvider;
 import com.ur.urcap.api.contribution.ViewAPIProvider;
 import com.ur.urcap.api.contribution.program.swing.SwingProgramNodeView;
@@ -35,6 +39,9 @@ public class PaintProgramView implements SwingProgramNodeView<PaintProgramContri
 	private JTextField degs;
 	private JCheckBox halt;
 	
+	private JSlider speed_slider;
+	private JLabel  speed_label;
+	
 //	private final CommsXmlRpc xml;	//goes to contribution i think
 //	private KeyboardInputFactory numInput;	//goes to contribution too i think
 	
@@ -46,11 +53,13 @@ public class PaintProgramView implements SwingProgramNodeView<PaintProgramContri
 	public void buildUI(JPanel panel, ContributionProvider<PaintProgramContribution> provider) {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		
-		panel.add(CreateTitle("Paint Control Node"));
+//		
+		panel.add(CreateTitle("Angle"));
 		panel.add(CreateSpace(0, 10));
 		
 		panel.add(CreateDegreeControl());
+		panel.add(CreateSpace(0, 25));
+		panel.add(CreateSpeedSlider());
 		panel.add(CreateSpace(0, 25));
 		panel.add(CreateCheckBox("complete before next action"));
 		
@@ -88,14 +97,10 @@ public class PaintProgramView implements SwingProgramNodeView<PaintProgramContri
         btn_up.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-//				Integer curr = Integer.parseInt(degs.getText()) + inc;
-//				if (curr>=max_ang) curr = (Integer) max_ang;
-//				degs.setText(Integer.toString(curr));
-//				try {
-//					xml.SendMessage("p"+Integer.toString(curr)+";");
-//				} catch (Exception e) {
-//					System.out.println("Failed to send on +.");
-//				}
+				Integer curr = Integer.parseInt(degs.getText()) + paintconfig.inc_btn;
+				if(curr>=paintconfig.max_ang) curr = (Integer) paintconfig.max_ang;
+				degs.setText(Integer.toString(curr));
+				//TODO update to datamodel
 			}
 		});
 
@@ -107,14 +112,10 @@ public class PaintProgramView implements SwingProgramNodeView<PaintProgramContri
         btn_down.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-//				Integer curr = Integer.parseInt(degs.getText()) - inc;
-//				if (curr>=max_ang) curr = (Integer) max_ang;
-//				degs.setText(Integer.toString(curr));
-//				try {
-//					xml.SendMessage("p"+Integer.toString(curr)+";");
-//				} catch (Exception e) {
-//					System.out.println("Failed to send on -.");
-//				}
+				Integer curr = Integer.parseInt(degs.getText()) - paintconfig.inc_btn;
+				if(curr>=paintconfig.max_ang) curr = (Integer) paintconfig.max_ang;
+				degs.setText(Integer.toString(curr));
+				//TODO update to datamodel
 			}
 		});
 
@@ -123,13 +124,14 @@ public class PaintProgramView implements SwingProgramNodeView<PaintProgramContri
         degs.setPreferredSize(new Dimension(100, 30));
         degs.setMaximumSize(degs.getPreferredSize());
         degs.setHorizontalAlignment(SwingConstants.CENTER);
-        degs.setText("0");
+        degs.setText("0");	//always default to 0.
         
         degs.addMouseListener(new MouseAdapter() {
         	@Override
 			public void mousePressed(MouseEvent e) {
-//        		KeyboardNumberInput<Integer> in = GetKeyInput();
-//        		in.show(degs, GetInputCallback());
+        		//TODO setup integer keypad
+        		//getinput
+        		//inputcallback
         	}
 		});
 
@@ -140,6 +142,34 @@ public class PaintProgramView implements SwingProgramNodeView<PaintProgramContri
         box.add(btn_up);
         
         return box;
+    }
+	
+    private Box CreateSpeedSlider() {
+    	Box box = Box.createHorizontalBox();
+		box.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		speed_label = new JLabel("100%");
+		
+		speed_slider = new JSlider(JSlider.HORIZONTAL, 10, 100, 100);	//10-100%, default 100
+		speed_slider.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		speed_slider.setPreferredSize(new Dimension(300, 30));
+		speed_slider.setMaximumSize(speed_slider.getPreferredSize());
+		
+		speed_slider.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent arg0) {
+				int v = speed_slider.getValue(); //should be from 10 to 100
+				speed_label.setText(Integer.toString(v)+"%");
+			}
+		});
+		
+		box.add(new JLabel("Speed: "));
+		box.add(speed_slider);
+		box.add(speed_label);
+		
+		return box;	
     }
 	
 	private Component CreateSpace(int w, int h) {

@@ -11,6 +11,7 @@ import com.handsome.nosnhoj.impl.Comms.ReadProgram.PortReadProgramService;
 import com.handsome.nosnhoj.impl.Comms.SendProgram.CommsProgramService;
 import com.handsome.nosnhoj.impl.LockLED.InstallationNode.LockLEDInstallationService;
 import com.handsome.nosnhoj.impl.LockLED.ProgramNode.LockLEDProgramService;
+import com.handsome.nosnhoj.impl.Paint.PaintProgramNode.PaintProgramService;
 import com.handsome.nosnhoj.impl.Paint.PaintToolbar.PaintToolbarService;
 import com.ur.urcap.api.contribution.DaemonService;
 import com.ur.urcap.api.contribution.installation.swing.SwingInstallationNodeService;
@@ -23,27 +24,28 @@ public class Activator implements BundleActivator {
 	public void start(BundleContext context) throws Exception {
 		System.out.println(">>>>>Nosnhoj says whatsgud.");
 		
-		//daemon stuff
-		
+		/*========================================================================================
+         * Installation
+         * ======================================================================================*/
 		CommsDaemonService daemonService = new CommsDaemonService();
 		CommsInstallationService installationNodeService = new CommsInstallationService(daemonService);
         context.registerService(SwingInstallationNodeService.class, installationNodeService, null);
 
-
-		//host led node
-//		context.registerService(SwingProgramNodeService.class, new LedProgramNodeService(), null);
-		//guest led node
-		//installation before program just in case
-		// context.registerService(SwingInstallationNodeService.class, new LockLEDInstallationService(), null);
-		// context.registerService(SwingProgramNodeService.class, new LockLEDProgramService(), null);
-        
+        /*========================================================================================
+         * Toolbar
+         * ======================================================================================*/
         context.registerService(SwingToolbarService.class, new CommsToolbarService(), null);
         context.registerService(SwingToolbarService.class, new PaintToolbarService(), null);
         
+        /*========================================================================================
+         * Program
+         * ======================================================================================*/
 //		context.registerService(SwingProgramNodeService.class, new PortSetupProgramService(), null);
 //		context.registerService(SwingProgramNodeService.class, new PortReadProgramService(), null);
 		context.registerService(SwingProgramNodeService.class, new CommsProgramService(), null);
+		context.registerService(SwingProgramNodeService.class, new PaintProgramService(), null);
         
+		
 		context.registerService(DaemonService.class, daemonService, null);
 	}
 

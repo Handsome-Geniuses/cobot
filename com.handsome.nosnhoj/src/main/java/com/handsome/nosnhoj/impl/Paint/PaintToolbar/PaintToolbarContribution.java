@@ -19,6 +19,8 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.handsome.nosnhoj.impl.Comms.Daemon.CommsXmlRpc;
 import com.handsome.nosnhoj.impl.Comms.DaemonInstallation.CommsInstallationContribution;
@@ -43,7 +45,8 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
     private JButton btn_down;
     private JTextField degs;
     private KeyboardInputFactory numInput;
-    private JSlider speed;
+    private JSlider speed_slider;
+    private JLabel  speed_label;
     
     private JButton btn_home;
     
@@ -112,6 +115,8 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 		page_main.add(CreateTitle("Paint Control"));
 		page_main.add(CreateSpace(0, 10));
 		page_main.add(CreateDegreeControl());
+		page_main.add(CreateSpace(0, 25));
+		page_main.add(CreateSpeedSlider());
 		
 		return page_main;
 	}
@@ -146,9 +151,8 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 				degs.setText(Integer.toString(value));
 				try {
 					System.out.println(xml.PortDump());
+					xml.SendMessage("s"+Integer.toString(speed_slider.getValue())+";");
 					xml.SendMessage("p"+Integer.toString(value)+";");
-//					while(xml.PortRead().contains("~"));
-//					while(!xml.PortRead().contains("!"));
 				} catch (Exception e) {
 					System.out.println("Failed to send on keyboard.");
 				}
@@ -172,9 +176,8 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 				if (curr>=max_ang) curr = (Integer) max_ang;
 				degs.setText(Integer.toString(curr));
 				try {
+					xml.SendMessage("s"+Integer.toString(speed_slider.getValue())+";");
 					xml.SendMessage("p"+Integer.toString(curr)+";");
-//					while(xml.PortRead().contains("~"));
-//					while(!xml.PortRead().contains("!"));
 				} catch (Exception e) {
 					System.out.println("Failed to send on +.");
 				}
@@ -193,9 +196,8 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 				if (curr>=max_ang) curr = (Integer) max_ang;
 				degs.setText(Integer.toString(curr));
 				try {
+					xml.SendMessage("s"+Integer.toString(speed_slider.getValue())+";");
 					xml.SendMessage("p"+Integer.toString(curr)+";");
-//					while(xml.PortRead().contains("~"));
-//					while(!xml.PortRead().contains("!"));
 				} catch (Exception e) {
 					System.out.println("Failed to send on -.");
 				}
@@ -230,8 +232,26 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
     	Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
-		speed = new JSlider(JSlider.HORIZONTAL, 10, 100, 100);	//10-100%, default 100
-		speed.setAlignmentX(Component.CENTER_ALIGNMENT);
+		speed_label = new JLabel("100%");
+		
+		speed_slider = new JSlider(JSlider.HORIZONTAL, 10, 100, 100);	//10-100%, default 100
+		speed_slider.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		speed_slider.setPreferredSize(new Dimension(300, 30));
+		speed_slider.setMaximumSize(speed_slider.getPreferredSize());
+		
+		speed_slider.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent arg0) {
+				int v = speed_slider.getValue(); //should be from 10 to 100
+				speed_label.setText(Integer.toString(v)+"%");
+			}
+		});
+		
+		box.add(new JLabel("Speed: "));
+		box.add(speed_slider);
+		box.add(speed_label);
 		
 		return box;	
     }
@@ -248,14 +268,8 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 			System.out.println(xml.PortDump());	//dump messages before send
 			String msg = xml.SendMessage("d;");
 			System.out.println(msg);
-			Thread.sleep(100);	//allow to buffer up //or while loop ~. think its fast enuf
+			Thread.sleep(100);	//allow to buffer up //or while loop ~.
 			msg = xml.PortRead();	//now read
-//			while(!(msg.contains("true") || msg.contains("false")))
-//			nms
-//			while(msg.contains("~")) {
-////				Thread.sleep(100);
-//				msg = xml.PortRead();	//now read
-//			}
 			System.out.println("read: " + msg);
 			
 			if(msg.contains("true")) {
@@ -263,9 +277,6 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 				System.out.println(xml.SendMessage("g;"));
 				Thread.sleep(100);
 				String d = xml.PortRead().replaceAll("\\s","");
-//				while(d.contains("~")) {
-//					d = xml.PortRead().replaceAll("\\s","");
-//				}
 				System.out.println("degs: "+d);
 				degs.setText(d);
 				card.show(p, PAGE_MAIN);
