@@ -126,7 +126,25 @@ public class PaintProgramContribution implements ProgramNodeContribution{
 		});
 	}
 	
-	
+	/*========================================================================================
+     * Script helpers
+     * ======================================================================================*/
+	private String SendString(String s) {
+		return xml_var+".send_message(\""+s+"\")";
+	}
+	private String GetSpeedString() {
+		return SendString("s"+Integer.toString(GetMotorSpeed())+";");
+	}
+	private String GetDegreeString() {
+		return SendString("p"+Integer.toString(GetAngle())+";");
+	}
+	private String GetDumpString() {
+		return xml_var+".msg_dump()";
+	}
+	private String GetContainsString() {
+//		return "while not "+xml_var+".string_contains("+xml_var+".get_message(), \"!p\"): end";
+		return "while not "+xml_var+".get_message() = \"!p\"";
+	}
 	/*========================================================================================
      * Main Overrides
      * ======================================================================================*/
@@ -144,18 +162,41 @@ public class PaintProgramContribution implements ProgramNodeContribution{
 
 	@Override
 	public String getTitle() {
-		return "paint";
+		return "paint("+Integer.toString(GetAngle())+") @"+Integer.toString(GetMotorSpeed())+"%";
 	}
 
 	@Override
 	public boolean isDefined() {
-		// TODO set define 
-		return true;
+		boolean connected = false;
+		try {
+			connected = apiProvider.getProgramAPI().getInstallationNode(CommsInstallationContribution.class).GetXmlRpc().IsPortConnected();
+		}
+		catch (Exception e) {
+			System.out.println("!!! paint node define failure.");
+		}
+		//TODO add a check to see if painter is initialized.
+		return connected;
 	}
 	
 	@Override
 	public void generateScript(ScriptWriter writer) {
-		writer.assign("test_assign", "14");	//temp filler
+		//TODO complete before next action
+//		writer.assign("test_assign", "14");	//temp filler
+		
+		//for wait, i think flow should be: set speed->dump->move->whileloop
+		writer.appendLine(GetSpeedString());
+		if(GetCheckBox()) {
+			writer.assign("ismovedone", "False");
+			writer.appendLine(GetDumpString());
+			writer.appendLine(GetDegreeString());
+//			writer.appendLine("while not dae_ard.string_contains(dae_ard.get_message(), \"!p\"): end");
+			writer.appendLine(GetContainsString());
+//			writer.appendLine("while "+GetContainsString());
+//			writer.appendLine("end");
+		}
+		else {
+			writer.appendLine(GetDegreeString());
+		}
 	}
 
 }

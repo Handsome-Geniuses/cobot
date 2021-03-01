@@ -11,6 +11,12 @@ ser = serial.Serial()
 read_string_buffer = "~"
 stopper = threading.Event()
 
+def string_contains(main_string, sub_string):
+    if main_string.find(sub_string) != -1:
+        return True
+    else:
+        return False
+
 #returns a string. have java convert to string array
 def get_ports():
     ports = []
@@ -63,7 +69,9 @@ def msg_dump():
         try:
             ser.flush()
             ser.reset_input_buffer()
-            ser.reset_output_buffer()
+            ser.reset_output_buffer() #out too arduino. don't want to accidently clear.
+            get_message() #reset read_string_buffer
+            get_message() #extra for sanity
             return "reset input, output, flush"
         except:
             return "Could not dump"
@@ -164,6 +172,7 @@ server.register_function(get_ports, "get_ports")
 server.register_function(port_check, "port_check")
 server.register_function(port_open, "port_open")
 server.register_function(port_close, "port_close")
+server.register_function(string_contains, "string_contains")
 server.serve_forever()
 
 
