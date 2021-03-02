@@ -142,8 +142,8 @@ public class PaintProgramContribution implements ProgramNodeContribution{
 		return xml_var+".msg_dump()";
 	}
 	private String GetContainsString() {
-//		return "while not "+xml_var+".string_contains("+xml_var+".get_message(), \"!p\"): end";
-		return "while not "+xml_var+".get_message() = \"!p\"";
+		return "while not "+xml_var+".string_contains("+xml_var+".get_message(), \"!p\"):";
+//		return "while "+xml_var+".get_message() != \"!p\": sleep(0.05) end";	//xml was timing out. think sleep will fix
 	}
 	/*========================================================================================
      * Main Overrides
@@ -191,6 +191,8 @@ public class PaintProgramContribution implements ProgramNodeContribution{
 			writer.appendLine(GetDegreeString());
 //			writer.appendLine("while not dae_ard.string_contains(dae_ard.get_message(), \"!p\"): end");
 			writer.appendLine(GetContainsString());
+			writer.appendLine("sleep(0.05)");
+			writer.appendLine("end");
 //			writer.appendLine("while "+GetContainsString());
 //			writer.appendLine("end");
 		}
