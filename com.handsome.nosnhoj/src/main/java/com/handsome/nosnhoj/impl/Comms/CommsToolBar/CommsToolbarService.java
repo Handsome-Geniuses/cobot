@@ -12,7 +12,7 @@ public class CommsToolbarService implements SwingToolbarService {
 
 	@Override
 	public Icon getIcon() {
-		return new ImageIcon(getClass().getResource("/icons/acme_logo.png"));
+		return new ImageIcon(getClass().getResource("/icons/comms.png"));
 	}
 
 	@Override
