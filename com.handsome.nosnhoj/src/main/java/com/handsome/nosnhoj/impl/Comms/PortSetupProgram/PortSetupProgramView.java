@@ -21,7 +21,7 @@ public class PortSetupProgramView implements SwingProgramNodeView<PortSetupProgr
 	private static final int gap_md = 25;
 	private static final int gap_lg = 50; 
 	
-	private static final Integer[] baudrates= {4800, 9600, 115200};
+	private static final Integer[] baudrates= {4800, 9600, 19200, 38400, 57600, 115200};
 	
 	private final ViewAPIProvider apiProvider;
 	

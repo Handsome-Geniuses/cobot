@@ -33,7 +33,7 @@ public class CommsToolbarContribution implements SwingToolbarContribution {
 	private JComboBox<String> portsBox = new JComboBox<String>();
 	private JComboBox<Integer> baudBox = new JComboBox<Integer>();
 	
-	private static final Integer[] baudrates= {4800, 9600, 115200};
+	private static final Integer[] baudrates= {4800, 9600, 19200, 38400, 57600, 115200};
 	
 	private String PortSelected =  "/dev/ttyTool";
 	
