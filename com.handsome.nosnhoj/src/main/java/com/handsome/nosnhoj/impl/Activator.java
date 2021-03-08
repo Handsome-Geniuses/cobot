@@ -11,6 +11,7 @@ import com.handsome.nosnhoj.impl.Comms.ReadProgram.PortReadProgramService;
 import com.handsome.nosnhoj.impl.Comms.SendProgram.CommsProgramService;
 import com.handsome.nosnhoj.impl.LockLED.InstallationNode.LockLEDInstallationService;
 import com.handsome.nosnhoj.impl.LockLED.ProgramNode.LockLEDProgramService;
+import com.handsome.nosnhoj.impl.Paint.InitProgramNode.PaintInitProgramService;
 import com.handsome.nosnhoj.impl.Paint.PaintProgramNode.PaintProgramService;
 import com.handsome.nosnhoj.impl.Paint.PaintToolbar.PaintToolbarService;
 import com.ur.urcap.api.contribution.DaemonService;
@@ -44,7 +45,7 @@ public class Activator implements BundleActivator {
 //		context.registerService(SwingProgramNodeService.class, new PortReadProgramService(), null);
 		context.registerService(SwingProgramNodeService.class, new CommsProgramService(), null);
 		context.registerService(SwingProgramNodeService.class, new PaintProgramService(), null);
-        
+		context.registerService(SwingProgramNodeService.class, new PaintInitProgramService(), null);
 		
 		context.registerService(DaemonService.class, daemonService, null);
 	}
