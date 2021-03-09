@@ -195,12 +195,37 @@ public class PaintProgramContribution implements ProgramNodeContribution{
 			writer.assign("ismovedone", "False");
 			writer.appendLine(GetDumpString());
 			writer.appendLine(GetDegreeString());
-//			writer.appendLine("while not dae_ard.string_contains(dae_ard.get_message(), \"!p\"): end");
-			writer.appendLine(GetContainsString());
-			writer.appendLine("sleep(0.05)");
-			writer.appendLine("end");
-//			writer.appendLine("while "+GetContainsString());
+			
+			//the following 3 lines are stable but no halt if error
+//			writer.appendLine(GetContainsString());
+//			writer.appendLine("sleep(0.05)");
 //			writer.appendLine("end");
+		
+			//attempt at timeout. kinda works. need to scale timeout with speed.
+//			writer.appendLine("t = "+xml_var+".get_time()");
+//			writer.appendLine(GetContainsString());
+//			writer.appendLine("sleep(0.05)");
+//			writer.appendLine("if "+xml_var+".get_time()-t>5:");
+//			writer.appendLine("popup(\"ERROR: paint move timeout.\", blocking=False)");
+//			writer.appendLine("halt");
+//			writer.appendLine("end");
+//			writer.appendLine("sleep(0.05)");
+//			writer.appendLine("end");
+			
+			//attempt at letting arduino notify that something is up.
+			writer.appendLine("msg = "+xml_var+".get_message()");
+			//wait for 'p'
+			writer.appendLine("while not "+xml_var+".string_contains(msg, \"p\"):");
+			writer.appendLine("sleep(0.05)");
+			writer.appendLine("msg = "+xml_var+".get_message()");
+			writer.appendLine("end");
+			//check for '?" error
+			writer.appendLine("sleep(0.05)");
+			writer.appendLine("if "+xml_var+".string_contains(msg, \"?\"):");
+			writer.appendLine("popup(\"ERROR: paint move failed.\", blocking=False)");
+			writer.appendLine("halt");
+			writer.appendLine("end");
+			
 		}
 		else {
 			writer.appendLine(GetDegreeString());

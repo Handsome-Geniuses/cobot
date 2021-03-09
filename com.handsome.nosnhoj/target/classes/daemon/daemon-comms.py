@@ -11,6 +11,9 @@ ser = serial.Serial()
 read_string_buffer = "~"
 stopper = threading.Event()
 
+def get_time(): #returns float
+    return time.time()
+
 def string_contains(main_string, sub_string):
     if main_string.find(sub_string) != -1:
         return True
@@ -173,6 +176,7 @@ server.register_function(port_check, "port_check")
 server.register_function(port_open, "port_open")
 server.register_function(port_close, "port_close")
 server.register_function(string_contains, "string_contains")
+server.register_function(get_time, "get_time")
 server.serve_forever()
 
 
