@@ -32,7 +32,6 @@ import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardInputFactory;
 import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardNumberInput;
 
 
-
 public class PaintToolbarContribution implements SwingToolbarContribution{
 	final static String PAGE_INIT = "INIT";
 	final static String PAGE_MAIN = "MAIN";
@@ -50,9 +49,13 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
     private JLabel  speed_label;
     
     private JButton btn_home;
+    private JButton btn_laser;
     
     private JPanel p;
 	
+    /*========================================================================================
+     * Constructor and buildui
+     * ======================================================================================*/
 	public PaintToolbarContribution(ToolbarContext context) {
 		this.context = context;
 		numInput = context.getAPIProvider().getUserInterfaceAPI().getUserInteraction().getKeyboardInputFactory();
@@ -69,6 +72,9 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 		
 	}
 	
+	/*========================================================================================
+     * UI components
+     * ======================================================================================*/
 	private JPanel CreateInitPage(final JPanel panel) {
 		JPanel page_init = new JPanel();
 		page_init.setLayout(new BoxLayout(page_init, BoxLayout.Y_AXIS)); 
@@ -118,6 +124,8 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 		page_main.add(CreateDegreeControl());
 		page_main.add(CreateSpace(0, 25));
 		page_main.add(CreateSpeedSlider());
+		page_main.add(CreateSpace(0, 25));
+		page_main.add(CreateLaserButton());
 		
 		return page_main;
 	}
@@ -161,6 +169,7 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 			}
 		};
 	}
+	
     private Box CreateDegreeControl(){
     	Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -256,11 +265,37 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 		
 		return box;	
     }
+    
+    private Box CreateLaserButton() {
+    	Box box = Box.createHorizontalBox();
+		box.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		btn_laser = new JButton("Lasers");
+		btn_laser.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		btn_laser.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				try {
+					xml.SendMessage("l;");
+				}
+				catch (Exception e1) {
+					System.out.println("Coult not toggle laser?");
+				}
+			}
+		});
+		box.add(btn_laser);
+		return box;	
+    }
+    
 	
 	private Component CreateSpace(int w, int h) {
 		return Box.createRigidArea(new Dimension(w, h));
 	}
 
+	/*========================================================================================
+     * Main overides
+     * ======================================================================================*/
 	@Override
 	public void openView() {
 		//check if gun is initialized. then decide view.

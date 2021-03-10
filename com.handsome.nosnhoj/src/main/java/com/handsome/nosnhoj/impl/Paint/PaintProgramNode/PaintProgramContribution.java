@@ -168,7 +168,7 @@ public class PaintProgramContribution implements ProgramNodeContribution{
 
 	@Override
 	public String getTitle() {
-		return "paint("+Integer.toString(GetAngle())+") @"+Integer.toString(GetMotorSpeed())+"%";
+		return "paintgun("+Integer.toString(GetAngle())+") @"+Integer.toString(GetMotorSpeed())+"%";
 	}
 
 	@Override

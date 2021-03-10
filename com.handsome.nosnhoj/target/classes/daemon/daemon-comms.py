@@ -1,8 +1,10 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import time
 import sys
 import serial
+import string
 import serial.tools.list_ports
 import atexit
 import threading
@@ -61,6 +63,8 @@ def read_message():
             s = ser.readline()
             #-1 to remove newline
             s=s[:-1]
+            # s = ''.join(filter(lambda x: x in string.printable, s))
+            s = ''.join(x for x in s if x in string.printable)
             return str(s)
         except:
             return "could not read for whatever reason"
