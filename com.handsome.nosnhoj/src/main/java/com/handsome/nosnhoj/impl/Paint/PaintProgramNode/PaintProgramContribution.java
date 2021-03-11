@@ -192,27 +192,7 @@ public class PaintProgramContribution implements ProgramNodeContribution{
 			writer.appendLine(GetDumpString());
 			writer.appendLine(GetDegreeString());
 			
-			//the following 3 lines are stable but no halt if error
-//			writer.appendLine(GetContainsString());
-//			writer.appendLine("sleep(0.05)");
-//			writer.appendLine("end");
-			
-//			//attempt at letting arduino notify that something is up.
-//			writer.appendLine("msg = "+xml_var+".get_message()");
-//			//wait for 'p'
-////			writer.appendLine("while not "+xml_var+".string_contains(msg, \"p\"):");
-//			writer.appendLine("sleep(0.05)");
-//			writer.appendLine("msg = "+xml_var+".get_message()");
-//			writer.appendLine("end");
-//			//check for '?" error
-//			writer.appendLine("sleep(0.05)");
-//			writer.appendLine("if "+xml_var+".string_contains(msg, \"?\"):");
-//			writer.appendLine("popup(\"ERROR: paint move failed.\", blocking=False)");
-//			writer.appendLine("halt");
-//			writer.appendLine("end");
-			
-			
-			//better faster attempt
+			//waits till "p". then checks if "?" for error.
 			writer.appendLine("msg = "+xml_var+".get_message()");
 			writer.appendLine("while str_find(msg, \"p\")==-1:");
 			writer.appendLine("sleep(0.05)");

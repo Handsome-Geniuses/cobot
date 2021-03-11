@@ -101,7 +101,7 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 //						Thread.sleep(100);
 						msg = xml.PortRead();
 						if(System.currentTimeMillis()-time_Start>6666) {
-							JOptionPane.showMessageDialog(null, "ERROR: Timedout. No reply.");
+							JOptionPane.showMessageDialog(null, "ERROR: Timedout. No reply.", "ERROR!", JOptionPane.ERROR_MESSAGE);
 							return;
 						}
 					}
@@ -310,7 +310,7 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 					while(msg.contains("~")) {
 						msg = xml.PortRead();
 						if(System.currentTimeMillis()-time_Start>6666) {
-							JOptionPane.showMessageDialog(null, "ERROR: Timedout. No reply.");
+							JOptionPane.showMessageDialog(null, "ERROR: Timedout. No reply.", "ERROR!", JOptionPane.ERROR_MESSAGE);
 							return;
 						}
 					}
