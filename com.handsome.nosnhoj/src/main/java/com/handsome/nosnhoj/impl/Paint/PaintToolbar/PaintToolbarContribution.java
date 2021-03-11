@@ -48,8 +48,9 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
     private JSlider speed_slider;
     private JLabel  speed_label;
     
-    private JButton btn_home;
+    private JButton btn_init;
     private JButton btn_laser;
+    private JButton btn_home;
     
     private JPanel p;
 	
@@ -82,9 +83,9 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 		JLabel label = new JLabel("Paint gun not initialized");
 		label.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
-		btn_home = new JButton("Reference Home");
-		btn_home.setAlignmentX(Component.CENTER_ALIGNMENT);
-		btn_home.addMouseListener(new MouseAdapter() {
+		btn_init = new JButton("Reference Home");
+		btn_init.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btn_init.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				String msg = "~";
@@ -111,7 +112,7 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 		
 		
 		page_init.add(label);
-		page_init.add(btn_home);
+		page_init.add(btn_init);
 		return page_init;
 	}
 
@@ -125,7 +126,7 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 		page_main.add(CreateSpace(0, 25));
 		page_main.add(CreateSpeedSlider());
 		page_main.add(CreateSpace(0, 25));
-		page_main.add(CreateLaserButton());
+		page_main.add(CreateMainButtons());
 		
 		return page_main;
 	}
@@ -145,7 +146,7 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 	//pops up the numpad ui
 	private KeyboardNumberInput<Integer> GetKeyInput(){
 		KeyboardNumberInput<Integer> in = numInput.createIntegerKeypadInput();
-		in.setInitialValue((int) 0);
+		in.setInitialValue(Integer.parseInt(degs.getText()));
 		return in;
 	}
 	
@@ -266,11 +267,12 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 		return box;	
     }
     
-    private Box CreateLaserButton() {
+    
+    private Box CreateMainButtons() {
     	Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
-		btn_laser = new JButton("Lasers");
+		btn_laser = new JButton("Laser");
 		btn_laser.setAlignmentX(Component.CENTER_ALIGNMENT);
 		
 		btn_laser.addMouseListener(new MouseAdapter() {
@@ -284,11 +286,81 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 				}
 			}
 		});
+		
+		btn_home = new JButton("Home");
+		btn_home.setAlignmentX(Component.CENTER_ALIGNMENT);
+		
+		btn_home.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				String msg = "~";
+				try {
+					System.out.println(xml.PortDump());
+					if(xml.SendMessage("h;").contains("not")) {
+						return;
+					}
+					while(msg.contains("~")) {
+						msg = xml.PortRead();
+					}
+					degs.setText(Integer.toString(0));
+
+				} 
+				catch (Exception e2) {
+					System.out.println("Could not send go home message.");
+				}
+			}
+		});
+		
+		box.add(btn_home);
+		box.add(CreateSpace(10, 0));
 		box.add(btn_laser);
 		return box;	
     }
     
-	
+//    private Box CreateLaserButton() {
+//    	Box box = Box.createHorizontalBox();
+//		box.setAlignmentX(Component.CENTER_ALIGNMENT);
+//		
+//		btn_laser = new JButton("Laser");
+//		btn_laser.setAlignmentX(Component.CENTER_ALIGNMENT);
+//		
+//		btn_laser.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mousePressed(MouseEvent e) {
+//				try {
+//					xml.SendMessage("l;");
+//				}
+//				catch (Exception e1) {
+//					System.out.println("Coult not toggle laser?");
+//				}
+//			}
+//		});
+//		box.add(btn_laser);
+//		return box;	
+//    }
+//    
+//    private Box CreateHomeButton() {
+//    	Box box = Box.createHorizontalBox();
+//		box.setAlignmentX(Component.CENTER_ALIGNMENT);
+//		
+//		btn_home = new JButton("Home");
+//		btn_home.setAlignmentX(Component.CENTER_ALIGNMENT);
+//		
+//		btn_home.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mousePressed(MouseEvent e) {
+//				try {
+//					xml.SendMessage("h;");
+//				}
+//				catch (Exception e1) {
+//					System.out.println("Coult not home?");
+//				}
+//			}
+//		});
+//		box.add(btn_home);
+//		return box;	
+//    }
+//    
 	private Component CreateSpace(int w, int h) {
 		return Box.createRigidArea(new Dimension(w, h));
 	}

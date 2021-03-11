@@ -61,7 +61,6 @@ public class CommsXmlRpc {
 		ArrayList<String> args = new ArrayList<String>();
 		args.add(msg);
 		System.out.println("xml send: "+msg);
-//		PortDump();
 		Object result = client.execute("send_message", args);
 		return processString(result);
 	}
@@ -71,36 +70,12 @@ public class CommsXmlRpc {
 		return processString(result);
 	}
 	
-//	public String PortDump() throws XmlRpcException, Exception{
-//		Object result = client.execute("msg_dump", new ArrayList<String>());
-//		return processString(result);
-//	}
-	
 	public String PortDump() throws XmlRpcException, Exception{
 		System.out.println("Atempting dump...");
 		Object result = client.execute("msg_dump", new ArrayList<String>());
 		System.out.println("sanity dump: "+processString(client.execute("get_message", new ArrayList<String>())));
-//		System.out.println("sanity dump: "+processString(client.execute("get_message", new ArrayList<String>())));
-//		Thread.sleep(200); //give it some time to dump/ actually not needed cause waits till execute done.
 		return processString(result);
 	}
-	
-//	public void PortDump() throws XmlRpcException, Exception{
-////		System.out.println("looping till port is cleared.");
-////		String dumper = " ";
-////		int i=0;
-////		while(i<5) {
-////			while(!dumper.contains("~")) {
-////				dumper = processString(client.execute("get_message", new ArrayList<String>()));
-////				System.out.println("dumper: "+dumper);
-////			}
-////			i++;
-////			dumper = processString(client.execute("get_message", new ArrayList<String>()));
-////		}
-////		System.out.println("sanity dump: "+processString(client.execute("get_message", new ArrayList<String>())));
-//		Object result = client.execute("msg_dump", new ArrayList<String>());
-//		
-//	}
 
 	private String processString(Object response) throws Exception {
 		if (response instanceof String) {

@@ -180,15 +180,11 @@ public class PaintProgramContribution implements ProgramNodeContribution{
 		catch (Exception e) {
 			System.out.println("!!! paint node define failure.");
 		}
-		//TODO add a check to see if painter is initialized.
 		return connected;
 	}
 	
 	@Override
 	public void generateScript(ScriptWriter writer) {
-		//TODO complete before next action
-//		writer.assign("test_assign", "14");	//temp filler
-		
 		//for wait, i think flow should be: set speed->dump->move->whileloop
 		writer.appendLine(GetSpeedString());
 		if(GetCheckBox()) {
@@ -198,17 +194,6 @@ public class PaintProgramContribution implements ProgramNodeContribution{
 			
 			//the following 3 lines are stable but no halt if error
 //			writer.appendLine(GetContainsString());
-//			writer.appendLine("sleep(0.05)");
-//			writer.appendLine("end");
-		
-			//attempt at timeout. kinda works. need to scale timeout with speed.
-//			writer.appendLine("t = "+xml_var+".get_time()");
-//			writer.appendLine(GetContainsString());
-//			writer.appendLine("sleep(0.05)");
-//			writer.appendLine("if "+xml_var+".get_time()-t>5:");
-//			writer.appendLine("popup(\"ERROR: paint move timeout.\", blocking=False)");
-//			writer.appendLine("halt");
-//			writer.appendLine("end");
 //			writer.appendLine("sleep(0.05)");
 //			writer.appendLine("end");
 			

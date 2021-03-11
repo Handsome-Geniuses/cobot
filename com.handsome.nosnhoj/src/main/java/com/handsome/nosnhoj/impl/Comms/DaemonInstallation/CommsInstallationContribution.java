@@ -233,17 +233,19 @@ public class CommsInstallationContribution implements InstallationNodeContributi
 		// Apply the settings to the daemon on program start in the Installation pre-amble
 		writer.assign(XMLRPC_VARIABLE, "rpc_factory(\"xmlrpc\", \"http://127.0.0.1:" + PORT + "/RPC2\")");	
 		
-		writer.appendLine(VAR_READ_STRING_VARIABLE+"=\"stringreadvar\"");
-		writer.appendLine("def "+FUN_GET_READ_STRING+"():");
-			writer.appendLine("return "+VAR_READ_STRING_VARIABLE); 
-		writer.appendLine("end");
+//		writer.appendLine(VAR_READ_STRING_VARIABLE+"=\"stringreadvar\"");
+//		writer.appendLine("def "+FUN_GET_READ_STRING+"():");
+//			writer.appendLine("return "+VAR_READ_STRING_VARIABLE); 
+//		writer.appendLine("end");
+//		
+//		writer.appendLine("def "+FUN_MSG_CHECK+"(s):");
+//			writer.appendLine("if(s=="+VAR_READ_STRING_VARIABLE+"):");
+//				writer.appendLine("return True");
+//			writer.appendLine("else:");
+//				writer.appendLine("return False");
+//			writer.appendLine("end");
+//		writer.appendLine("end");
 		
-		writer.appendLine("def "+FUN_MSG_CHECK+"(s):");
-			writer.appendLine("if(s=="+VAR_READ_STRING_VARIABLE+"):");
-				writer.appendLine("return True");
-			writer.appendLine("else:");
-				writer.appendLine("return False");
-			writer.appendLine("end");
-		writer.appendLine("end");
+		
 	}
 }
