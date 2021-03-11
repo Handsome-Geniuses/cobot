@@ -27,12 +27,12 @@ public class CommsInstallationView implements SwingInstallationNodeView<CommsIns
 	public void buildUI(JPanel panel, CommsInstallationContribution contribution) {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-		panel.add(CreateTitle("Daemon status:"));
+//		panel.add(CreateTitle("Daemon status:"));
 		panel.add(CreateStatus());
 		panel.add(CreateSpace(0, 10));
 		panel.add(CreateStartStopButtons(contribution));
 		panel.add(CreateSpace(0, 30));
-		panel.add(CreateTitle("Function Descriptions:"));
+//		panel.add(CreateTitle("Function Descriptions:"));
 		panel.add(CreateSpace(0, 10));
 		
 	}

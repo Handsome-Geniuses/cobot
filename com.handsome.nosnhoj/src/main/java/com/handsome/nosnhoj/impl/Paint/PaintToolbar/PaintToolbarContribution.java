@@ -15,6 +15,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -94,9 +95,15 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 					if(xml.SendMessage("h;").contains("not")) {
 						return;
 					}
+//					JOptionPane.showMessageDialog(null, "asdasdsadasd");
+					long time_Start = System.currentTimeMillis();
 					while(msg.contains("~")) {
 //						Thread.sleep(100);
 						msg = xml.PortRead();
+						if(System.currentTimeMillis()-time_Start>6666) {
+							JOptionPane.showMessageDialog(null, "ERROR: Timedout. No reply.");
+							return;
+						}
 					}
 					degs.setText(Integer.toString(0));
 					//change to main layout
@@ -298,10 +305,16 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 					System.out.println(xml.PortDump());
 					if(xml.SendMessage("h;").contains("not")) {
 						return;
-					}
+					}					
+					long time_Start = System.currentTimeMillis();
 					while(msg.contains("~")) {
 						msg = xml.PortRead();
+						if(System.currentTimeMillis()-time_Start>6666) {
+							JOptionPane.showMessageDialog(null, "ERROR: Timedout. No reply.");
+							return;
+						}
 					}
+					
 					degs.setText(Integer.toString(0));
 
 				} 
@@ -316,51 +329,7 @@ public class PaintToolbarContribution implements SwingToolbarContribution{
 		box.add(btn_laser);
 		return box;	
     }
-    
-//    private Box CreateLaserButton() {
-//    	Box box = Box.createHorizontalBox();
-//		box.setAlignmentX(Component.CENTER_ALIGNMENT);
-//		
-//		btn_laser = new JButton("Laser");
-//		btn_laser.setAlignmentX(Component.CENTER_ALIGNMENT);
-//		
-//		btn_laser.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mousePressed(MouseEvent e) {
-//				try {
-//					xml.SendMessage("l;");
-//				}
-//				catch (Exception e1) {
-//					System.out.println("Coult not toggle laser?");
-//				}
-//			}
-//		});
-//		box.add(btn_laser);
-//		return box;	
-//    }
-//    
-//    private Box CreateHomeButton() {
-//    	Box box = Box.createHorizontalBox();
-//		box.setAlignmentX(Component.CENTER_ALIGNMENT);
-//		
-//		btn_home = new JButton("Home");
-//		btn_home.setAlignmentX(Component.CENTER_ALIGNMENT);
-//		
-//		btn_home.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mousePressed(MouseEvent e) {
-//				try {
-//					xml.SendMessage("h;");
-//				}
-//				catch (Exception e1) {
-//					System.out.println("Coult not home?");
-//				}
-//			}
-//		});
-//		box.add(btn_home);
-//		return box;	
-//    }
-//    
+
 	private Component CreateSpace(int w, int h) {
 		return Box.createRigidArea(new Dimension(w, h));
 	}

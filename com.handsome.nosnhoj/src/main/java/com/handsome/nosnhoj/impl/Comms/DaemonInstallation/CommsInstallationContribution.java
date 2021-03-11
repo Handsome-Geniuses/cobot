@@ -1,7 +1,6 @@
 package com.handsome.nosnhoj.impl.Comms.DaemonInstallation;
 
 import com.handsome.nosnhoj.impl.util.GV;
-import com.handsome.nosnhoj.impl.util;
 import com.handsome.nosnhoj.impl.Comms.Daemon.CommsDaemonService;
 import com.handsome.nosnhoj.impl.Comms.Daemon.CommsXmlRpc;
 import com.ur.urcap.api.contribution.DaemonContribution;
