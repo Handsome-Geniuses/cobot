@@ -2,14 +2,10 @@ package com.handsome.nosnhoj.impl.Comms.DaemonInstallation;
 
 import com.ur.urcap.api.contribution.ViewAPIProvider;
 import com.ur.urcap.api.contribution.installation.swing.SwingInstallationNodeView;
-import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardTextInput;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class CommsInstallationView implements SwingInstallationNodeView<CommsInstallationContribution> {
 
@@ -20,8 +16,9 @@ public class CommsInstallationView implements SwingInstallationNodeView<CommsIns
 	private JButton stopButton;
 	private JLabel statusLabel;
 	
-	private JButton sendButton;
-
+	/*========================================================================================
+     * Constructor and Build
+     * ======================================================================================*/
 	public CommsInstallationView(ViewAPIProvider apiProvider) {
 		this.apiProvider=apiProvider;
 	}
@@ -30,41 +27,46 @@ public class CommsInstallationView implements SwingInstallationNodeView<CommsIns
 	public void buildUI(JPanel panel, CommsInstallationContribution contribution) {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
+		panel.add(CreateTitle("Daemon status:"));
 		panel.add(CreateStatus());
 		panel.add(CreateSpace(0, 10));
 		panel.add(CreateStartStopButtons(contribution));
-		
-		panel.add(CreateSpace(0, 50));
-		
-		panel.add(CreateInput(contribution));
+		panel.add(CreateSpace(0, 30));
+		panel.add(CreateTitle("Function Descriptions:"));
 		panel.add(CreateSpace(0, 10));
-		panel.add(CreateSendButton(contribution));
+		
+	}
+	
+	/*========================================================================================
+     * Get and sets
+     * ======================================================================================*/
+
+	public void SetStartButtonState(boolean state) {
+		startButton.setEnabled(state);
 	}
 
-	private Box CreateInput(final CommsInstallationContribution contribution) {
+	public void SetStopButtonState(boolean state) {
+		stopButton.setEnabled(state);
+	}
+
+	public void SetStatus(String text) {
+		statusLabel.setText(text);
+	}
+	
+	/*========================================================================================
+     * UI Components
+     * ======================================================================================*/
+	private Box CreateTitle(String s) {
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
-
 		
-
-		popupInputField = new JTextField();
-		popupInputField.setFocusable(false);
-		popupInputField.setPreferredSize(new Dimension(230, 30));
-		popupInputField.setMaximumSize(popupInputField.getPreferredSize());
-		popupInputField.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				KeyboardTextInput keyboardInput = contribution.GetInputForTextField();
-				keyboardInput.show(popupInputField, contribution.GetCallbackForTextField());
-			}
-		});
-//		box.add(new JLabel("Message: "));
-//		box.add(CreateSpace(10, 0));
-//		box.add(popupInputField);
-
+		JLabel label = new JLabel(s);
+		label.setFont(label.getFont().deriveFont(Font.BOLD, 24));
+		box.add(label);
+		
 		return box;
 	}
-
+	
 	private Box CreateStartStopButtons(final CommsInstallationContribution contribution) {
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -92,23 +94,6 @@ public class CommsInstallationView implements SwingInstallationNodeView<CommsIns
 		return box;
 	}
 	
-	private Box CreateSendButton(final CommsInstallationContribution contribution) {
-		Box box = Box.createHorizontalBox();
-		box.setAlignmentX(Component.LEFT_ALIGNMENT);
-		
-		sendButton = new JButton("send");
-		sendButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				contribution.OnSendClick();		
-			}
-		});
-		
-//		box.add(sendButton);
-		return box;
-	}
-	
 	private Box CreateStatus() {
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -118,22 +103,6 @@ public class CommsInstallationView implements SwingInstallationNodeView<CommsIns
 		return box;
 	}
 
-	public void SetPopupText(String t) {
-		popupInputField.setText(t);
-	}
-
-	public void SetStartButtonState(boolean state) {
-		startButton.setEnabled(state);
-	}
-
-	public void SetStopButtonState(boolean state) {
-		stopButton.setEnabled(state);
-	}
-
-	public void SetStatus(String text) {
-		statusLabel.setText(text);
-	}
-	
 	private Component CreateSpace(int w, int h) {
 		return Box.createRigidArea(new Dimension(w, h));
 	}

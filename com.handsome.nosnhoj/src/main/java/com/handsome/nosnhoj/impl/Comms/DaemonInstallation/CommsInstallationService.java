@@ -20,7 +20,7 @@ public class CommsInstallationService implements SwingInstallationNodeService<Co
 
 	@Override
 	public String getTitle(Locale locale) {
-		return "Daemon Communication Setup";
+		return "Daemon";
 	}
 
 	@Override

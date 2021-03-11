@@ -197,20 +197,31 @@ public class PaintProgramContribution implements ProgramNodeContribution{
 //			writer.appendLine("sleep(0.05)");
 //			writer.appendLine("end");
 			
-			//attempt at letting arduino notify that something is up.
+//			//attempt at letting arduino notify that something is up.
+//			writer.appendLine("msg = "+xml_var+".get_message()");
+//			//wait for 'p'
+////			writer.appendLine("while not "+xml_var+".string_contains(msg, \"p\"):");
+//			writer.appendLine("sleep(0.05)");
+//			writer.appendLine("msg = "+xml_var+".get_message()");
+//			writer.appendLine("end");
+//			//check for '?" error
+//			writer.appendLine("sleep(0.05)");
+//			writer.appendLine("if "+xml_var+".string_contains(msg, \"?\"):");
+//			writer.appendLine("popup(\"ERROR: paint move failed.\", blocking=False)");
+//			writer.appendLine("halt");
+//			writer.appendLine("end");
+			
+			
+			//better faster attempt
 			writer.appendLine("msg = "+xml_var+".get_message()");
-			//wait for 'p'
-			writer.appendLine("while not "+xml_var+".string_contains(msg, \"p\"):");
+			writer.appendLine("while str_find(msg, \"p\")==-1:");
 			writer.appendLine("sleep(0.05)");
 			writer.appendLine("msg = "+xml_var+".get_message()");
 			writer.appendLine("end");
-			//check for '?" error
-			writer.appendLine("sleep(0.05)");
-			writer.appendLine("if "+xml_var+".string_contains(msg, \"?\"):");
+			writer.appendLine("if str_find(msg, \"?\")!=-1:"); //so it exists
 			writer.appendLine("popup(\"ERROR: paint move failed.\", blocking=False)");
 			writer.appendLine("halt");
 			writer.appendLine("end");
-			
 		}
 		else {
 			writer.appendLine(GetDegreeString());

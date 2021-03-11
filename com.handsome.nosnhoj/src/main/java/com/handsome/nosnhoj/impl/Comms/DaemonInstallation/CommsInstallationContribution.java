@@ -10,10 +10,6 @@ import com.ur.urcap.api.contribution.installation.CreationContext;
 import com.ur.urcap.api.contribution.installation.InstallationAPIProvider;
 import com.ur.urcap.api.domain.data.DataModel;
 import com.ur.urcap.api.domain.script.ScriptWriter;
-import com.ur.urcap.api.domain.userinteraction.inputvalidation.InputValidationFactory;
-import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardInputCallback;
-import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardInputFactory;
-import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardTextInput;
 import com.ur.urcap.api.domain.variable.GlobalVariable;
 
 import java.awt.*;
@@ -29,12 +25,12 @@ public class CommsInstallationContribution implements InstallationNodeContributi
 	
 	private static final String KEY_ENABLED = "enabled";
 	
-	private static final String KEY_INPUT = "user_input";
-	private static final String DEF_INPUT = "msg";
-	
 	private static final String VAR_READ_STRING_VARIABLE = "read_string_buffer";
 	private static final String FUN_GET_READ_STRING = "get_read_string";
 	private static final String FUN_MSG_CHECK = "msg_is";
+	
+	private static final String FUN_STR_CONTAINS = "str_find";
+	
 	
 	private final GlobalVariable g_READ_STRING_VARIABLE;
 
@@ -46,19 +42,18 @@ public class CommsInstallationContribution implements InstallationNodeContributi
 	private Timer uiTimer;
 	private boolean pauseTimer = false;
 
-	private KeyboardInputFactory keyboardInputFactory;
-	private final InputValidationFactory inputValidationFactory;
-
+	/*========================================================================================
+     * Constructor
+     * ======================================================================================*/
 	public CommsInstallationContribution(InstallationAPIProvider apiProvider, CommsInstallationView view, DataModel model, CommsDaemonService daemonService, CreationContext context) {
-		keyboardInputFactory = apiProvider.getUserInterfaceAPI().getUserInteraction().getKeyboardInputFactory();
-		inputValidationFactory = apiProvider.getUserInterfaceAPI().getUserInteraction().getInputValidationFactory();
 		this.view = view;
 		this.daemonService = daemonService;
 		this.model = model;
-		
+
 		this.g_READ_STRING_VARIABLE = new GV(VAR_READ_STRING_VARIABLE);
-		util.AddScriptFunction(apiProvider, FUN_GET_READ_STRING);
-		util.AddScriptFunction(apiProvider, FUN_MSG_CHECK, "msg");
+//		util.AddScriptFunction(apiProvider, FUN_GET_READ_STRING);
+//		util.AddScriptFunction(apiProvider, FUN_MSG_CHECK, "msg");
+//		util.AddScriptFunction(apiProvider, FUN_STR_CONTAINS, "string", "find");
 		
 		xmlRpcDaemonInterface = new CommsXmlRpc("127.0.0.1", PORT);
 		if (context.getNodeCreationType() == CreationContext.NodeCreationType.NEW) {
@@ -66,36 +61,38 @@ public class CommsInstallationContribution implements InstallationNodeContributi
 		DaemonThread();
 	}
 
-	@Override
-	public void openView() {
-		view.SetPopupText(GetUserInput());
-
-		//UI updates from non-GUI threads must use EventQueue.invokeLater (or SwingUtilities.invokeLater)
-		uiTimer = new Timer(true);
-		uiTimer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				EventQueue.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						if (!pauseTimer) {
-							UpdateStatusUI();
-						}
-					}
-				});
-			}
-		}, 0, 1000);
+	/*========================================================================================
+     * Get and sets
+     * ======================================================================================*/
+	public boolean isDefined() {
+		return getDaemonState() == DaemonContribution.State.RUNNING;
 	}
 
-	@Override
-	public void closeView() {
-		if (uiTimer != null) {
-			uiTimer.cancel();
-		}
+	private DaemonContribution.State getDaemonState() {
+		return daemonService.getDaemon().getState();
 	}
 
+	private Boolean IsDaemonEnabled() {
+		return model.get(KEY_ENABLED, true); //This daemon is enabled by default
+	}
 
+	public String GetXmlRpcVariable(){
+		return XMLRPC_VARIABLE;
+	}
 
+	public CommsXmlRpc GetXmlRpc() {
+		return xmlRpcDaemonInterface;
+	}
+	
+	public String GetVarReadString() {
+		return g_READ_STRING_VARIABLE.getDisplayName();
+	}
+	public String GetFunGetReadString() {
+		return FUN_GET_READ_STRING;
+	}
+	/*========================================================================================
+     * Listener
+     * ======================================================================================*/
 	private void UpdateStatusUI() {
 		DaemonContribution.State state = getDaemonState();
 
@@ -135,15 +132,9 @@ public class CommsInstallationContribution implements InstallationNodeContributi
 		DaemonThread();
 	}
 	
-	//Button to send messages through port. For debugging purposes
-	public void OnSendClick() {
-		try {
-			xmlRpcDaemonInterface.SendMessage(GetUserInput()+"\n");
-		} catch (Exception e) {
-			System.out.println(">>>>> Faileeeeeed");
-		}
-	}
-
+	/*========================================================================================
+     * Daemon thread stuff
+     * ======================================================================================*/
 	//handles when to turn on and off daemon through installation
 	private void DaemonThread() {
 		new Thread(new Runnable() {
@@ -172,62 +163,37 @@ public class CommsInstallationContribution implements InstallationNodeContributi
 			Thread.sleep(100);
 		}
 	}
+	
+	/*========================================================================================
+     * Main Overrides
+     * ======================================================================================*/
+	@Override
+	public void openView() {
 
-	public String GetUserInput() {
-		return model.get(KEY_INPUT, DEF_INPUT);
-	}
-
-	public KeyboardTextInput GetInputForTextField() {
-		KeyboardTextInput keyboardInput = keyboardInputFactory.createStringKeyboardInput();
-		keyboardInput.setErrorValidator(inputValidationFactory.createStringLengthValidator(1, 255));
-		keyboardInput.setInitialValue(GetUserInput());
-		return keyboardInput;
-	}
-
-	public KeyboardInputCallback<String> GetCallbackForTextField() {
-		return new KeyboardInputCallback<String>() {
+		//UI updates from non-GUI threads must use EventQueue.invokeLater (or SwingUtilities.invokeLater)
+		uiTimer = new Timer(true);
+		uiTimer.schedule(new TimerTask() {
 			@Override
-			public void onOk(String value) {
-//				setPopupTitle(value);
-				SetUserInput(value);
-				view.SetPopupText(value);
+			public void run() {
+				EventQueue.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						if (!pauseTimer) {
+							UpdateStatusUI();
+						}
+					}
+				});
 			}
-		};
+		}, 0, 1000);
 	}
 
-	
-	private void SetUserInput(String in) {
-		model.set(KEY_INPUT, in);
+	@Override
+	public void closeView() {
+		if (uiTimer != null) {
+			uiTimer.cancel();
+		}
 	}
 
-	public boolean isDefined() {
-		return getDaemonState() == DaemonContribution.State.RUNNING;
-	}
-
-	private DaemonContribution.State getDaemonState() {
-		return daemonService.getDaemon().getState();
-	}
-
-	private Boolean IsDaemonEnabled() {
-		return model.get(KEY_ENABLED, true); //This daemon is enabled by default
-	}
-
-	public String GetXmlRpcVariable(){
-		return XMLRPC_VARIABLE;
-	}
-
-	public CommsXmlRpc GetXmlRpc() {
-		return xmlRpcDaemonInterface;
-	}
-	
-	public String GetVarReadString() {
-		return g_READ_STRING_VARIABLE.getDisplayName();
-	}
-	public String GetFunGetReadString() {
-		return FUN_GET_READ_STRING;
-	}
-	
-	 
 	@Override
 	public void generateScript(ScriptWriter writer) {
 		// Apply the settings to the daemon on program start in the Installation pre-amble
