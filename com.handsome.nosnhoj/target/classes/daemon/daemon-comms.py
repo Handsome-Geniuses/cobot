@@ -3,6 +3,7 @@
 
 import time
 import sys
+import wget
 import serial
 import string
 import serial.tools.list_ports
@@ -12,6 +13,12 @@ import threading
 ser = serial.Serial()
 read_string_buffer = "~"
 stopper = threading.Event()
+
+urcaps_url = "https://github.com/Handsome-Geniuses/cobot/raw/main/com.handsome.nosnhoj/target/nosnhoj-1.0-SNAPSHOT.urcap"
+urcaps_fp = "/programs/jl/urcaps_download/nosnhoj.urcap"
+
+def Urcaps_Update():
+    return "downloaded" + wget.download(urcaps_url, urcaps_fp)
 
 def get_time(): #returns float
     return time.time()
@@ -181,6 +188,7 @@ server.register_function(port_open, "port_open")
 server.register_function(port_close, "port_close")
 server.register_function(string_contains, "string_contains")
 server.register_function(get_time, "get_time")
+server.register_function(Urcaps_Update, "Urcaps_Update")
 server.serve_forever()
 
 

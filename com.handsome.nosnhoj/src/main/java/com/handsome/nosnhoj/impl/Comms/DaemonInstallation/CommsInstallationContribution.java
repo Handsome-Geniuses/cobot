@@ -15,6 +15,8 @@ import java.awt.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.xmlrpc.XmlRpcException;
+
 public class CommsInstallationContribution implements InstallationNodeContribution {
 //	private static final String POPUPTITLE_KEY = "popuptitle";
 
@@ -129,6 +131,15 @@ public class CommsInstallationContribution implements InstallationNodeContributi
 	public void OnStopClick() {
 		model.set(KEY_ENABLED, false);
 		DaemonThread();
+	}
+	
+	public void OnUpdateClick() {
+		try {
+			System.out.println(xmlRpcDaemonInterface.UrcapsDownload());
+		} 
+		catch (Exception e) {
+			System.out.println("Could not download. You connected?");
+		}
 	}
 	
 	/*========================================================================================

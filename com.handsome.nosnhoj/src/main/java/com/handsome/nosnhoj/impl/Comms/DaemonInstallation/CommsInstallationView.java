@@ -16,6 +16,8 @@ public class CommsInstallationView implements SwingInstallationNodeView<CommsIns
 	private JButton stopButton;
 	private JLabel statusLabel;
 	
+	private JButton update;
+	
 	/*========================================================================================
      * Constructor and Build
      * ======================================================================================*/
@@ -27,13 +29,19 @@ public class CommsInstallationView implements SwingInstallationNodeView<CommsIns
 	public void buildUI(JPanel panel, CommsInstallationContribution contribution) {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-//		panel.add(CreateTitle("Daemon status:"));
+		panel.add(CreateTitle("Daemon status:"));
 		panel.add(CreateStatus());
 		panel.add(CreateSpace(0, 10));
 		panel.add(CreateStartStopButtons(contribution));
 		panel.add(CreateSpace(0, 30));
-//		panel.add(CreateTitle("Function Descriptions:"));
+		panel.add(CreateTitle("Urcaps Download:"));
+		panel.add(new JLabel("Downloads urcaps from server into /jl/urcaps_download/"));
 		panel.add(CreateSpace(0, 10));
+		panel.add(CreateUpdateButton(contribution));
+		
+//		panel.add(CreateSpace(0, 30));
+//		panel.add(CreateTitle("Function Descriptions:"));
+//		panel.add(CreateSpace(0, 10));
 		
 	}
 	
@@ -100,6 +108,22 @@ public class CommsInstallationView implements SwingInstallationNodeView<CommsIns
 
 		statusLabel = new JLabel("Daemon Status");
 		box.add(statusLabel);
+		return box;
+	}
+	
+	private Box CreateUpdateButton(final CommsInstallationContribution contribution) {
+		Box box = Box.createHorizontalBox();
+		box.setAlignmentX(Component.LEFT_ALIGNMENT);
+		update = new JButton("Download");
+		update.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				contribution.OnUpdateClick();
+			}
+		});
+		
+		box.add(update);
 		return box;
 	}
 

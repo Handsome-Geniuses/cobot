@@ -76,6 +76,12 @@ public class CommsXmlRpc {
 		System.out.println("sanity dump: "+processString(client.execute("get_message", new ArrayList<String>())));
 		return processString(result);
 	}
+	
+	public String UrcapsDownload() throws XmlRpcException, Exception{
+		System.out.println("Atempting download of urcaps");
+		Object result = client.execute("Urcaps_Update", new ArrayList<String>());
+		return processString(result);
+	}
 
 	private String processString(Object response) throws Exception {
 		if (response instanceof String) {
